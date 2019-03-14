@@ -14,3 +14,4 @@
 
 data/pending/*.txt
 data/processed/*.txt
+.idea/*
