@@ -37,6 +37,7 @@ class PageWorkerCommand extends Command
         parent::__construct();
         $this->container = $container;
         $this->em = $this->container->get('doctrine')->getManager();
+        $this->pending_path = rtrim(dirname(__DIR__, 1), '/') . '/data/pending';
     }
 
     /**
