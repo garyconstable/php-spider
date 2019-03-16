@@ -4,7 +4,6 @@ namespace App\Service;
 
 class UrlService
 {
-
     /**
      * Debugger
      * ==
@@ -19,25 +18,60 @@ class UrlService
         }
     }
 
+    /**
+     *
+     * ==
+     * @param string $needle
+     * @param string $haystack
+     * @return bool
+     */
     public function startsWith( $needle = "", $haystack = "" )
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
+    /**
+     *
+     * ==
+     * @param string $needle
+     * @param string $haystack
+     * @return bool
+     */
     public function endsWith( $needle = "", $haystack = "" )
     {
         $length = strlen($needle);
         if ($length == 0) {
             return true;
         }
-
         return (substr($haystack, -$length) === $needle);
     }
 
+    /**
+     *
+     * ==
+     * @param string $url
+     * @return mixed
+     */
     public function getDomain( $url = "")
     {
         $parts = \parse_url($url);
-        return $parts['host'];
+        return isset($parts['host']) ? $parts['host'] : false;
+    }
+
+    /**
+     *
+     * ==
+     * @param string $url
+     * @return bool|string
+     */
+    public static function removeQueryString( $url = "" )
+    {
+        try {
+            $parts = parse_url($url);
+            return $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
+        }catch(\Exception $ex){
+            return false;
+        }
     }
 }

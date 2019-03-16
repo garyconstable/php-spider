@@ -6,6 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 use App\Entity\Pending;
 
@@ -72,23 +74,21 @@ class QueueWorkerCommand extends Command
      * ==
      * @param string $url
      * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getPage($url = "")
     {
         try {
-            $client = new \GuzzleHttp\Client();
-            $response = $client->request('GET', $url, [
-                'timeout'         => 1,
-                'connect_timeout' => 1,
-                'headers' => [
-                    'User-Agent' => "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 "
-                ]
-            ]);
-            if( $response->getStatusCode() == 200 ){
-                return $response->getBody()->getContents();
-            }
-            return false;
+            $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
+            $ctx = stream_context_create(array(
+                    'http' => array(
+                        'timeout' => 1,
+                        'method' => "GET",
+                        'header' => "Accept-language: en\r\n" .
+                            "Cookie: foo=bar\r\n" .
+                            "User-Agent: " . $header_str . "\r\n"
+                    ))
+            );
+            return file_get_contents($url, false, $ctx);
         }catch(\Exception $ex){
             return false;
         }
@@ -144,7 +144,7 @@ class QueueWorkerCommand extends Command
      * Process the batch / queue
      * ==
      * @param int $attempt
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function process_queue( $attempt = 0)
     {
@@ -160,6 +160,7 @@ class QueueWorkerCommand extends Command
                 }
             }
         }
+        $this->execPageWorker();
     }
 
     /**
@@ -190,5 +191,21 @@ class QueueWorkerCommand extends Command
                 $this->queueRunner($attempt);
             }
         }
+    }
+
+    /**
+     * Rn the page worker
+     * ==
+     * @throws \Exception
+     */
+    public function execPageWorker()
+    {
+        $arguments = ['command' => 'spider:worker:page'];
+
+        $input = new ArrayInput($arguments);
+        $output = new NullOutput();
+
+        $command = $this->getApplication()->find('spider:worker:page');
+        $command->run($input, $output);
     }
 }

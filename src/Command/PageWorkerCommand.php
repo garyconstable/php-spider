@@ -19,7 +19,7 @@ class PageWorkerCommand extends Command
 {
     protected static $defaultName = 'spider:worker:page';
 
-    private $batch = 1;
+    private $batch = 10;
 
     private $em;
 
@@ -72,6 +72,11 @@ class PageWorkerCommand extends Command
         }
     }
 
+    public function cleanUrl($href = "")
+    {
+        return UrlService::removeQueryString($href);
+    }
+
     /**
      * Get the HTML
      * ==
@@ -80,15 +85,22 @@ class PageWorkerCommand extends Command
      */
     public function getPage( $item = [] )
     {
+        $filepath = $this->pending_path . $item['filename'];
         try {
-            $filepath = $this->pending_path . $item['filename'];
-            $page = \file_get_contents($filepath);
-            if ( \strlen($page) > 0     ) {
-                unlink($filepath);
+            $page = "";
+            $file_handle = fopen($filepath, "r");
+            while (!feof($file_handle)) {
+                $line = fgets($file_handle);
+                $page .= $line;
+            }
+            fclose($file_handle);
+            if( strlen($page) ){
+                @unlink($filepath);
                 return $page;
             }
             return false;
         }catch( \Exception $ex ){
+            @unlink($filepath);
             return false;
         }
     }
@@ -112,7 +124,6 @@ class PageWorkerCommand extends Command
             $this->em->remove($item);
             $this->em->flush();
         }
-
         return $queue;
     }
 
@@ -160,7 +171,10 @@ class PageWorkerCommand extends Command
             {
                 if( UrlService::startsWith( "http:", $href ) || UrlService::startsWith('https:', $href ) )
                 {
-                    $ret[] = $href;
+                    $cleanedUrl = $this->cleanUrl($href);
+                    if( FALSE !== $cleanedUrl ){
+                        $ret[] = $cleanedUrl;
+                    }
                 }
             }
         }
@@ -175,7 +189,7 @@ class PageWorkerCommand extends Command
     {
         $domain_name = UrlService::getDomain($link);
 
-        if(!\is_null($domain_name )){
+        if(!\is_null($domain_name) && $domain_name ){
             try {
                 $domain = new Domains();
                 $domain->setDomain($domain_name);
@@ -218,7 +232,11 @@ class PageWorkerCommand extends Command
 
             if($page)
             {
-                $externalLinks = $this->getExternalLinks($page);
+                $the_links = $this->getExternalLinks($page);
+
+                $externalLinks = array_unique($the_links);
+
+                //$this->d($externalLinks, 0);
 
                 foreach($externalLinks as $link)
                 {
@@ -245,11 +263,10 @@ class PageWorkerCommand extends Command
      * Queue Runner
      * ==
      * @param int $attempt
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function queueRunner( $attempt = 0 )
     {
-        print("[+] Run Batch: " . $attempt) . PHP_EOL;
+        print("[+] Run PageWorker: " . $attempt) . PHP_EOL;
 
         $queue_size = $this->get_queue_length();
         if($queue_size > 0){
