@@ -19,6 +19,15 @@ class DomainsRepository extends ServiceEntityRepository
         parent::__construct($registry, Domains::class);
     }
 
+    public function tableSize()
+    {
+        return $this->createQueryBuilder('q')
+            ->select('count(q.id) as total')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Domains[] Returns an array of Domains objects
     //  */

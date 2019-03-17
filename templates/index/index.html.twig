@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Spider Info{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/cover.css">
+    <style>v-cloak{display: none;}</style>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                domains: 0,
+                queue: 0,
+                pending: 0
+            },
+            mounted: function(){
+                let self = this;
+                this.$http.get('/spider-status', {responseType: 'json'}).then(function(response) {
+                    if (response.status == "200") {
+
+                        if( response.body.domains ){
+                            self.domains = response.body.domains;
+                        }
+
+                        if( response.body.queue ){
+                            self.queue = response.body.queue;
+                        }
+
+                        if( response.body.pending ){
+                            self.pending = response.body.pending;
+                        }
+                    }
+                });
+            }
+        })
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div id="app">
+        <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+            <header class="masthead mb-auto"></header>
+            <main role="main" class="inner cover" v-cloak>
+                <h1 class="cover-heading">Current Spider status.</h1>
+                <p class="lead">Domains: {{"{{ domains }}"}} - Queue: {{"{{ queue }}"}} - Pending: {{"{{ pending }}"}}</p>
+            </main>
+            <footer class="mastfoot mt-auto"></footer>
+        </div>
+    </div>
+{% endblock %}
