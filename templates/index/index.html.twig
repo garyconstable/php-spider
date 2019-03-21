@@ -17,26 +17,55 @@
             data: {
                 domains: 0,
                 queue: 0,
-                pending: 0
+                pending: 0,
+                workers: 0
             },
             mounted: function(){
-                let self = this;
-                this.$http.get('/spider-status', {responseType: 'json'}).then(function(response) {
-                    if (response.status == "200") {
+                this.getStats();
+            },
+            methods: {
+                getStats: function(){
+                    let self = this;
+                    this.$http.get('/spider-status', {responseType: 'json'}).then(function(response) {
+                        if (response.status == "200") {
 
-                        if( response.body.domains ){
-                            self.domains = response.body.domains;
-                        }
+                            if( response.body.domains ){
+                                self.domains = response.body.domains;
+                            }
 
-                        if( response.body.queue ){
-                            self.queue = response.body.queue;
-                        }
+                            if( response.body.queue ){
+                                self.queue = response.body.queue;
+                            }
 
-                        if( response.body.pending ){
-                            self.pending = response.body.pending;
+                            if( response.body.pending ){
+                                self.pending = response.body.pending;
+                            }
+
+                            if( response.body.workers ){
+                                self.workers = response.body.workers;
+                            }
                         }
-                    }
-                });
+                    });
+                },
+                start: function (event) {
+                    console.log('--> Start');
+                    let _this = this;
+                    event.preventDefault();
+                    this.$http.get('/spider-start', {responseType: 'json'}).then(function(response) {
+                        _this.getStats();
+                        console.log(response);
+                    });
+
+                },
+                stop: function (event) {
+                    console.log('--> Stop');
+                    let _this = this;
+                    event.preventDefault();
+                    this.$http.get('/spider-stop', {responseType: 'json'}).then(function(response) {
+                        _this.getStats();
+                        console.log(response);
+                    });
+                }
             }
         })
     </script>
@@ -48,7 +77,8 @@
             <header class="masthead mb-auto"></header>
             <main role="main" class="inner cover" v-cloak>
                 <h1 class="cover-heading">Current Spider status.</h1>
-                <p class="lead">Domains: {{"{{ domains }}"}} | Queue: {{"{{ queue }}"}} | Pending: {{"{{ pending }}"}}</p>
+                <p class="lead">Domains: {{"{{ domains }}"}} | Queue: {{"{{ queue }}"}} | Pending: {{"{{ pending }}"}} | Workers: {{"{{ workers }}"}}</p>
+                <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a>
             </main>
             <footer class="mastfoot mt-auto"></footer>
         </div>

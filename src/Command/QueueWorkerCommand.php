@@ -22,7 +22,7 @@ class QueueWorkerCommand extends Command
 
     private $container;
 
-    private $pending_path = "/Users/garyconstable/Desktop/code/vhosts/spider/data/pending/";
+    private $pending_path = "";
 
     /**
      * QueueWorkerCommand constructor.
@@ -53,7 +53,6 @@ class QueueWorkerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //$this->d($this->pending_path);
         $this->queueRunner(1);
     }
 
@@ -202,12 +201,9 @@ class QueueWorkerCommand extends Command
      */
     public function execPageWorker()
     {
-        $arguments = ['command' => 'spider:worker:page'];
-
-        $input = new ArrayInput($arguments);
-        $output = new NullOutput();
-
-        $command = $this->getApplication()->find('spider:worker:page');
-        $command->run($input, $output);
+        $dir =  rtrim(dirname(__DIR__, 2), '/') ;
+        $command = "php " . $dir . "/bin/console spider:worker:page > /dev/null 2>&1 & echo $!;";
+        $pid = exec($command, $output);
+        return $pid;
     }
 }
