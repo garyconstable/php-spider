@@ -65,7 +65,13 @@
                         _this.getStats();
                         console.log(response);
                     });
-                }
+                },
+                refresh: function (event) {
+                    console.log('--> Refresh');
+                    let _this = this;
+                    event.preventDefault();
+                    _this.getStats();
+                },
             }
         })
     </script>
@@ -78,7 +84,7 @@
             <main role="main" class="inner cover" v-cloak>
                 <h1 class="cover-heading">Current Spider status.</h1>
                 <p class="lead">Domains: {{"{{ domains }}"}} | Queue: {{"{{ queue }}"}} | Pending: {{"{{ pending }}"}} | Workers: {{"{{ workers }}"}}</p>
-                <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a>
+                <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a> <a class="btn btn-info" v-on:click="refresh">Refresh</a>
             </main>
             <footer class="mastfoot mt-auto"></footer>
         </div>
