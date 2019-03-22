@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <script>
-        var app = new Vue({
+        let app = new Vue({
             el: '#app',
             data: {
                 domains: 0,
@@ -21,6 +21,10 @@
                 workers: 0
             },
             mounted: function(){
+		const _this = this;
+		setInterval(function(){
+			_this.getStats();
+		}, 2000);
                 this.getStats();
             },
             methods: {
@@ -74,17 +78,20 @@
                 },
             }
         })
+
     </script>
 {% endblock %}
 
 {% block body %}
     <div id="app">
         <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-            <header class="masthead mb-auto"></header>
+            <header class="masthead mb-auto">
+		{# <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a> <a class="btn btn-info" v-on:click="refresh">Refresh</a> #}		
+	    </header>
             <main role="main" class="inner cover" v-cloak>
-                <h1 class="cover-heading">Current Spider status.</h1>
+                <h1 class="cover-heading">Ghostfrog - Spider</h1>
                 <p class="lead">Domains: {{"{{ domains }}"}} | Queue: {{"{{ queue }}"}} | Pending: {{"{{ pending }}"}} | Workers: {{"{{ workers }}"}}</p>
-                <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a> <a class="btn btn-info" v-on:click="refresh">Refresh</a>
+                <a class="btn btn-primary" v-on:click="start">Start</a> <a class="btn btn-danger" v-on:click="stop">Stop</a> {# <a class="btn btn-info" v-on:click="refresh">Refresh</a> #}
             </main>
             <footer class="mastfoot mt-auto"></footer>
         </div>

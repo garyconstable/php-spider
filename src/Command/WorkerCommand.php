@@ -19,7 +19,7 @@ class WorkerCommand extends Command
 
     private $container;
 
-    private $max_workers = 3;
+    private $max_workers = 5;
 
 
     /**
