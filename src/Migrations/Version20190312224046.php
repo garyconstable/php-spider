@@ -17,19 +17,48 @@ final class Version20190312224046 extends AbstractMigration
         return '';
     }
 
+    /**
+     * @param Schema $schema
+     */
     public function up(Schema $schema) : void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
+        $queue = "CREATE TABLE `queue` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `url` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `url` (`url`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;)";
+        $this->addSql($queue);
 
-        $this->addSql('CREATE TABLE queue (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, url VARCHAR(255) NOT NULL UNIQUE)');
+
+        $pending= "CREATE TABLE `pending` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `url` varchar(255) NOT NULL DEFAULT '',
+        `filename` varchar(255) NOT NULL DEFAULT '',
+        `date_add` datetime NOT NULL,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        $this->addSql($pending);
+
+
+        $domain = "CREATE TABLE `domains` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `domain` varchar(255) NOT NULL DEFAULT '',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `domain` (`domain`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        $this->addSql($domain);
+
+
+        $process = "CREATE TABLE `process` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `pid` int(11) NOT NULL,
+        `date_add` datetime NOT NULL,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        $this->addSql($process);
+
     }
 
-    public function down(Schema $schema) : void
-    {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
-
-        $this->addSql('DROP TABLE queue');
-    }
+    public function down(Schema $schema) : void{}
 }
