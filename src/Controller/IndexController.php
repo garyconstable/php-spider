@@ -40,13 +40,22 @@ class IndexController extends AbstractController
         $domains    = $em->getRepository('App:Domains')->tableSize();
         $queue      = $em->getRepository('App:Queue')->tableSize();
         $pending    = $em->getRepository('App:Pending')->tableSize();
-        $workers    = $em->getRepository('App:Process')->tableSize();
+        $tmp        = $em->getRepository('App:Process')->findAll();
+        $workers    = [];
+
+        foreach($tmp as $worker){
+            $workers[] = [
+                'id'    => $worker->getId(),
+                'pid'   => $worker->getPid(),
+                'date'  => $worker->getDateAdd()->format('Y-m-d H:i:s')
+            ];
+        }
 
         return new JsonResponse(array(
             'domains'   => $domains[0]['total'],
             'queue'     => $queue[0]['total'],
             'pending'   => $pending[0]['total'],
-            'workers'   => $workers[0]['total']
+            'workers'   => $workers
         ));
     }
 
