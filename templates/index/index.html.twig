@@ -57,7 +57,6 @@
                     let _this = this;
                     event.preventDefault();
                     this.$http.get('/spider-start', {responseType: 'json'}).then(function(response) {
-                        _this.getStats();
                         console.log(response);
                     });
 
@@ -67,7 +66,6 @@
                     let _this = this;
                     event.preventDefault();
                     this.$http.get('/spider-stop', {responseType: 'json'}).then(function(response) {
-                        _this.getStats();
                         console.log(response);
                     });
                 },
@@ -75,7 +73,6 @@
                     console.log('--> Refresh');
                     let _this = this;
                     event.preventDefault();
-                    _this.getStats();
                 },
                 getWorkerSize: function(){
                     return this.workers.length;

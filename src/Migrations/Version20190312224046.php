@@ -25,8 +25,7 @@ final class Version20190312224046 extends AbstractMigration
         $queue = "CREATE TABLE `queue` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `url` varchar(255) DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `url` (`url`)
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;)";
         $this->addSql($queue);
 
@@ -44,8 +43,7 @@ final class Version20190312224046 extends AbstractMigration
         $domain = "CREATE TABLE `domains` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `domain` varchar(255) NOT NULL DEFAULT '',
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `domain` (`domain`)
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         $this->addSql($domain);
 
