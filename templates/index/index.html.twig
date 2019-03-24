@@ -22,9 +22,6 @@
             },
             mounted: function(){
 		        const _this = this;
-                setInterval(function(){
-                    _this.getStats();
-                }, 2000);
                 this.getStats();
             },
             methods: {
@@ -48,6 +45,10 @@
                             if( response.body.workers ){
                                 self.workers = response.body.workers;
                             }
+
+                            setTimeout(function(){
+                                self .getStats();
+                            }, 2000);
                         }
                     });
                 },
