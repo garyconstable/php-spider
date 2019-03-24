@@ -74,4 +74,15 @@ class UrlService
             return false;
         }
     }
+
+    /**
+     * Are we matching a file ?
+     * ==
+     * @param string $url
+     * @return false|int
+     */
+    public static function isImageFile( $url = "")
+    {
+        return preg_match("/^[^\?]+\.(pdf|jpg|jpeg|gif|png)(?:\?|$)/", $url);
+    }
 }

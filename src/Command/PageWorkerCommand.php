@@ -174,7 +174,10 @@ class PageWorkerCommand extends Command
                 {
                     $cleanedUrl = $this->cleanUrl($href);
                     if( FALSE !== $cleanedUrl ){
-                        $ret[] = $cleanedUrl;
+
+                        if( !UrlService::isImageFile( $cleanedUrl) ){
+                            $ret[] = $cleanedUrl;
+                        }
                     }
                 }
             }
