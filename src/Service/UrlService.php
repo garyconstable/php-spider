@@ -85,4 +85,97 @@ class UrlService
     {
         return preg_match("/^[^\?]+\.(pdf|jpg|jpeg|gif|png)(?:\?|$)/", $url);
     }
+
+
+    /**
+     * Get External Links
+     * ==
+     * @param string $html
+     * @return array
+     */
+    public static function getExternalLinks($html = "", $current_domain = false)
+    {
+        $ret = [];
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($html);
+        $links = $dom->getElementsByTagName('a');
+        foreach ($links as $link)
+        {
+            $href = $link->getAttribute('href');
+
+            if ( !UrlService::startsWith('#', $href) && $href != '/' )
+            {
+                if( UrlService::startsWith( "http:", $href ) || UrlService::startsWith('https:', $href ) )
+                {
+                    $link_domain = self::getDomain($href);
+
+                    if( $link_domain != $current_domain ){
+
+                        $cleanedUrl =   self::removeQueryString($href);
+
+                        if( FALSE !== $cleanedUrl ){
+
+                            if( !self::isImageFile( $cleanedUrl) ){
+
+                                //$ret[] = $cleanedUrl;
+
+                                $ret[] = $link_domain;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $ret = array_unique($ret);
+
+        return $ret;
+    }
+
+
+    /**
+     * Get External Links
+     * ==
+     * @param string $html
+     * @return array
+     */
+    public static function getInternalLinks($html = "", $current_domain = false)
+    {
+        $ret = [];
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($html);
+        $links = $dom->getElementsByTagName('a');
+        foreach ($links as $link)
+        {
+            $href = $link->getAttribute('href');
+
+            if ( !UrlService::startsWith('#', $href) && $href != '/' )
+            {
+                if( UrlService::startsWith( "http:", $href ) || UrlService::startsWith('https:', $href ) )
+                {
+                    $link_domain = self::getDomain($href);
+
+                    if( $link_domain == $current_domain ){
+
+                        $cleanedUrl = self::removeQueryString($href);
+
+                        if( FALSE !== $cleanedUrl ){
+
+                            if( !self::isImageFile( $cleanedUrl) ){
+
+                                $ret[] = $cleanedUrl;
+
+                                //$ret[] = $link_domain;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $ret = array_unique($ret);
+
+        return $ret;
+    }
+
 }
