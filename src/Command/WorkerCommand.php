@@ -14,12 +14,10 @@ use Symfony\Component\Process\Process;
 class WorkerCommand extends Command
 {
     protected static $defaultName = 'spider:worker';
-
     private $em;
-
     private $container;
-
     private $max_workers = 5;
+    private $worker_type = 'spider_worker';
 
 
     /**
@@ -80,6 +78,7 @@ class WorkerCommand extends Command
     {
         $proc = new \App\Entity\Process();
         $proc->setPid($pid);
+        $proc->setWorkerType($this->worker_type);
         $proc->setDateAdd(new \DateTime());
         $this->em->persist($proc);
         $this->em->flush();
@@ -112,7 +111,7 @@ class WorkerCommand extends Command
     protected function getCurrentNumberOfWorkers()
     {
         $num = 0;
-        $processes = $this->em->getRepository('App:Process')->findAll();
+        $processes = $this->em->getRepository('App:Process')->findBy(['worker_type' => $this->worker_type]);
         if(empty($processes)){
             return 0;
         }

@@ -1,25 +1,11 @@
 <?php
 
-namespace App\Command;
-
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use App\Service\UrlService;
-use App\Entity\ExternalDomain;
+namespace App\Service;
 
 
-
-
-class DomainWorkerCommand extends Command
+class DomainWorkerService
 {
-    protected static $defaultName = 'spider:worker:domain';
-
-    private $em;
-
-    private $container;
+    private $ds;
 
     private $internal_links = [];
 
@@ -30,15 +16,12 @@ class DomainWorkerCommand extends Command
     private $max_pages_crawled = 100;
 
     /**
+     * DomainWorkerService constructor.
      * ==
-     * DomainWorkerCommand constructor.
-     * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct()
     {
-        parent::__construct();
-        $this->container = $container;
-        $this->em = $this->container->get('doctrine')->getManager();
+
     }
 
     /**
@@ -56,36 +39,22 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Add settings here..
      * ==
-     */
-    protected function configure()
-    {
-        $this->addArgument('url', InputArgument::REQUIRED, 'The Seed URL');
-    }
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void|null
+     * @param $url
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function crawl($url)
     {
-        $url = $input->getArgument('url');
-
         $this->current_domain = UrlService::getDomain($url);
+
+        echo '--> ' . $this->current_domain . PHP_EOL;
 
         $this->scrapePage($url);
 
         $this->linkRunner();
-
-        $this->saveExternalLinks();
-
     }
 
     /**
-     * Get the next Internal Link
      * ==
      * @return mixed
      */
@@ -103,7 +72,6 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Itterate through the links
      * ==
      * @throws \Exception
      */
@@ -147,7 +115,6 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Add the link to the array(s)
      * ==
      * @param array $links
      * @param bool $internal
@@ -189,7 +156,6 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Scrape the page
      * ==
      * @param string $url
      * @throws \Exception
@@ -207,40 +173,32 @@ class DomainWorkerCommand extends Command
         $this->addLink($ext_links, false);
     }
 
-    /**
-     * Add the Domain to the Database
-     * ==
-     * @param string $domain_name
-     */
-    public function addDomain( $domain_name = "" )
-    {
 
-        if(!\is_null($domain_name) && $domain_name ){
-            try {
-                $domain = new ExternalDomain();
-                $domain->setUrl($domain_name);
-                $domain->setVisited(false);
-                $domain->setDateAdd( new \DateTime() );
-                $this->em->persist($domain);
-                $this->em->flush();
-            }catch (UniqueConstraintViolationException $e) {
-                $this->em = $this->container->get('doctrine')->resetManager();
-            }catch(\Exception $ex){
 
-            }
-        }
-    }
 
-    /**
-     * Save the links
-     * ==
-     */
-    public function saveExternalLinks()
-    {
-        foreach( $this->external_links as $link )
-        {
-            $this->addDomain($link['link']);
-        }
-    }
+    /*
+   public function addDomain( $link = "" )
+   {
+       $domain_name = $link;
+
+       if(!\is_null($domain_name) && $domain_name ){
+           try {
+               $domain = new ExternalDomain();
+               $domain->setUrl($domain_name);
+               $domain->setVisited(false);
+               $domain->setDateAdd( new \DateTime() );
+               $this->em->persist($domain);
+               $this->em->flush();
+           }catch (UniqueConstraintViolationException $e) {
+               $this->em = $this->container->get('doctrine')->resetManager();
+           }catch(\Exception $ex){
+
+           }
+       }
+   }
+   */
+
+
+
+
 }
-

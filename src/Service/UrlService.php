@@ -56,7 +56,16 @@ class UrlService
     public function getDomain( $url = "")
     {
         $parts = \parse_url($url);
-        return isset($parts['host']) ? $parts['host'] : false;
+        return isset($parts['host']) ? $parts['host'] : FALSE;
+    }
+
+    public function getDomainWithPrefix( $url = "")
+    {
+        $parts = \parse_url($url);
+        if(!isset($parts['scheme'])){
+            $parts['scheme'] = 'http';
+        }
+        return isset($parts['host']) ? $parts['scheme'] . '://' . $parts['host'] : $url;
     }
 
     /**
@@ -113,13 +122,15 @@ class UrlService
 
                         $cleanedUrl =   self::removeQueryString($href);
 
+                        $cleanedUrl = self::getDomainWithPrefix($cleanedUrl);
+
                         if( FALSE !== $cleanedUrl ){
 
                             if( !self::isImageFile( $cleanedUrl) ){
 
-                                //$ret[] = $cleanedUrl;
+                                $ret[] = $cleanedUrl;
 
-                                $ret[] = $link_domain;
+                                //$ret[] = $link_domain;
                             }
                         }
                     }
@@ -164,8 +175,6 @@ class UrlService
                             if( !self::isImageFile( $cleanedUrl) ){
 
                                 $ret[] = $cleanedUrl;
-
-                                //$ret[] = $link_domain;
                             }
                         }
                     }
