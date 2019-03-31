@@ -114,7 +114,7 @@
                                 <td>{{"{{ item.id }}"}}</td>
                                 <td>{{"{{ item.pid }}"}}</td>
                                 <td>{{"{{ item.date }}"}}</td>
-                                <td>{{"{{ item.worker_url }}"}}</td>
+                                <td><a v-bind:href="item.worker_url" target="_blank">{{"{{ item.worker_url }}"}}</a></td>
                             </tr>
                         </template>
                     </table>
