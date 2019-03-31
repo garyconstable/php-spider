@@ -95,14 +95,14 @@
                     <nav class="nav nav-masthead justify-content-center">
                         <a class="nav-link" href="/">Home</a>
                         <a class="nav-link" href="/domain/spider">Domain</a>
-                        <a class="nav-link active" href="/link/spider">Link</a>
+                        {# <a class="nav-link active" href="/link/spider">Link</a> #}
                     </nav>
                 </div>
             </header>
             <main role="main" class="inner " v-cloak>
                 <div class="clearfix">
                     <h1 class="float-md-left cover-heading">Link Spider <sup>Beta</sup></h1>
-                    <a class=" start_button float-md-right btn btn-success" v-on:click="start">Start Crawler</a>
+                    {# <a class=" start_button float-md-right btn btn-success" v-on:click="start">Start Crawler</a> #}
                 </div>
                 <p class="lead mt-4">Domains: {{"{{ domains }}"}} | Queue: {{"{{ queue }}"}} | Processing: {{"{{ pending }}"}} | Crawlers: {{"{{ getWorkerSize() }}"}}</p>
                 <table class="table table-striped table-dark" style="margin-top: 30px;">
