@@ -21,6 +21,7 @@ class DomainCrawlerCommand extends Command
     private $domainsService;
     private $entityManager;
     private $container;
+    private $mailer;
 
     /**
      * QueueWorkerCommand constructor.
@@ -84,6 +85,8 @@ class DomainCrawlerCommand extends Command
      */
     public function execInitiator()
     {
+        $this->sendEmail();
+
         $worker_type = 'domain_initiator';
         $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => $worker_type ]);
         $parent_process = false;
@@ -126,7 +129,8 @@ class DomainCrawlerCommand extends Command
             $command = "php " . $dir . "/bin/console spider:domain:start ".$parent_process_id." > /dev/null 2>&1 & echo $!;";
             $pid = exec($command, $output);
 
-            if(!$parent_process_id){
+            if(!$parent_process_id)
+            {
                 $process = new Process();
                 $process->setPid($pid);
                 $process->setWorkerType($worker_type);
@@ -136,5 +140,13 @@ class DomainCrawlerCommand extends Command
                 $this->entityManager->flush();
             }
         }
+    }
+
+
+    public function sendEmail()
+    {
+        $msg = "Domain Crawler Start.";
+        $msg = wordwrap($msg,70);
+        mail("garyconstable80@gmail.com","Ghostfrog - Spider status",$msg);
     }
 }
