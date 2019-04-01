@@ -1,0 +1,5 @@
+{
+    "symfony/proxy-manager-bridge": {
+        "version": "v4.2.4"
+    }
+}

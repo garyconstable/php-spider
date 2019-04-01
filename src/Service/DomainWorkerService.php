@@ -7,6 +7,8 @@ class DomainWorkerService
 {
     private $ds;
 
+    private $emails         = [];
+
     private $internal_links = [];
 
     private $external_links = [];
@@ -115,6 +117,22 @@ class DomainWorkerService
     }
 
     /**
+     *
+     * ==
+     * @param $emails
+     */
+    public function addEmails($emails)
+    {
+        foreach($emails as $email)
+        {
+            if(!in_array($email, $this->emails))
+            {
+               $this->emails[] = $email;
+            }
+        }
+    }
+
+    /**
      * ==
      * @param array $links
      * @param bool $internal
@@ -164,41 +182,16 @@ class DomainWorkerService
     {
         $html = $this->getPage($url);
 
-        $int_links = UrlService::getInternalLinks($html, $this->current_domain);
+        $int_links  = UrlService::getInternalLinks($html, $this->current_domain);
 
-        $ext_links = UrlService::getExternalLinks($html, $this->current_domain);
+        $ext_links  = UrlService::getExternalLinks($html, $this->current_domain);
+
+        $emails     = UrlService::getEmails($html);
 
         $this->addLink($int_links, true);
 
         $this->addLink($ext_links, false);
+
+        $this->addEmails($emails);
     }
-
-
-
-
-    /*
-   public function addDomain( $link = "" )
-   {
-       $domain_name = $link;
-
-       if(!\is_null($domain_name) && $domain_name ){
-           try {
-               $domain = new ExternalDomain();
-               $domain->setUrl($domain_name);
-               $domain->setVisited(false);
-               $domain->setDateAdd( new \DateTime() );
-               $this->em->persist($domain);
-               $this->em->flush();
-           }catch (UniqueConstraintViolationException $e) {
-               $this->em = $this->container->get('doctrine')->resetManager();
-           }catch(\Exception $ex){
-
-           }
-       }
-   }
-   */
-
-
-
-
 }

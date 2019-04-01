@@ -22,13 +22,22 @@ final class Version20190312224046 extends AbstractMigration
      */
     public function up(Schema $schema) : void
     {
-        $queue = "CREATE TABLE `queue` (
+        $domain = "CREATE TABLE `domains` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `url` varchar(255) DEFAULT NULL,
+        `domain` varchar(255) NOT NULL DEFAULT '',
         PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=6673338 DEFAULT CHARSET=utf8;";
-        $this->addSql($queue);
+        ) ENGINE=InnoDB AUTO_INCREMENT=434540 DEFAULT CHARSET=utf8;";
+        $this->addSql($domain);
 
+        $ext = "CREATE TABLE `external_domain` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `url` varchar(255) NOT NULL,
+        `visited` tinyint(1) NOT NULL,
+        `date_add` datetime NOT NULL,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `url` (`url`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=43483 DEFAULT CHARSET=utf8;";
+        $this->addSql($ext);
 
         $pending= "CREATE TABLE `pending` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -39,15 +48,6 @@ final class Version20190312224046 extends AbstractMigration
         ) ENGINE=InnoDB AUTO_INCREMENT=10209 DEFAULT CHARSET=utf8;";
         $this->addSql($pending);
 
-
-        $domain = "CREATE TABLE `domains` (
-        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `domain` varchar(255) NOT NULL DEFAULT '',
-        PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=434540 DEFAULT CHARSET=utf8;";
-        $this->addSql($domain);
-
-
         $process = "CREATE TABLE `process` (
         `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
         `parent_id` int(11) DEFAULT '0',
@@ -57,19 +57,15 @@ final class Version20190312224046 extends AbstractMigration
         `worker_url` varchar(255) DEFAULT NULL,
         `date_add` datetime NOT NULL,
         PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=23667 DEFAULT CHARSET=utf8;";
+        ) ENGINE=InnoDB AUTO_INCREMENT=24453 DEFAULT CHARSET=utf8;";
         $this->addSql($process);
 
-        $ext = "CREATE TABLE `external_domain` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `url` varchar(255) NOT NULL,
-        `visited` tinyint(1) NOT NULL,
-        `date_add` datetime NOT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `url` (`url`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=42672 DEFAULT CHARSET=utf8;";
-        $this->addSql($process);
-
+        $queue = "CREATE TABLE `queue` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `url` varchar(255) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=6673338 DEFAULT CHARSET=utf8;";
+        $this->addSql($queue);
     }
 
     public function down(Schema $schema) : void{}

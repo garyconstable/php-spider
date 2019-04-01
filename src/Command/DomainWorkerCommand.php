@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Service\UrlService;
 use App\Entity\ExternalDomain;
+use App\Entity\Email;
 
 
 
@@ -20,6 +21,8 @@ class DomainWorkerCommand extends Command
     private $em;
 
     private $container;
+
+    private $emails         = [];
 
     private $internal_links = [];
 
@@ -82,6 +85,7 @@ class DomainWorkerCommand extends Command
 
         $this->saveExternalLinks();
 
+        $this->saveEmails();
     }
 
     /**
@@ -202,9 +206,29 @@ class DomainWorkerCommand extends Command
 
         $ext_links = UrlService::getExternalLinks($html, $this->current_domain);
 
+        $emails     = UrlService::getEmails($html);
+
         $this->addLink($int_links, true);
 
         $this->addLink($ext_links, false);
+
+        $this->addEmails($emails);
+    }
+
+    /**
+     *
+     * ==
+     * @param $emails
+     */
+    public function addEmails($emails)
+    {
+        foreach($emails as $email)
+        {
+            if(!in_array($email, $this->emails))
+            {
+                $this->emails[] = $email;
+            }
+        }
     }
 
     /**
@@ -240,6 +264,29 @@ class DomainWorkerCommand extends Command
         foreach( $this->external_links as $link )
         {
             $this->addDomain($link['link']);
+        }
+    }
+
+    /**
+     *
+     * ==
+     */
+    public function saveEmails()
+    {
+        $this->em = $this->container->get('doctrine')->resetManager();
+
+        foreach( $this->emails as $addr )
+        {
+            try {
+                $email = new Email();
+                $email->setEmail($addr);
+                $this->em->persist($email);
+                $this->em->flush();
+            }catch (UniqueConstraintViolationException $e) {
+                $this->em = $this->container->get('doctrine')->resetManager();
+            }catch(\Exception $ex){
+
+            }
         }
     }
 }

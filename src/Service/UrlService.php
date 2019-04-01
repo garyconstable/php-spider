@@ -59,6 +59,12 @@ class UrlService
         return isset($parts['host']) ? $parts['host'] : FALSE;
     }
 
+    /**
+     *
+     * ==
+     * @param string $url
+     * @return string
+     */
     public function getDomainWithPrefix( $url = "")
     {
         $parts = \parse_url($url);
@@ -187,4 +193,24 @@ class UrlService
         return $ret;
     }
 
+    /**
+     *
+     * ==
+     * @param $html
+     * @return array
+     */
+    public function getEmails($html)
+    {
+        //initialise an empty array.
+        $matches = array();
+
+        //regular expression that matches most email addresses, courtesy of @Eric-Karl.
+        $pattern = '/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}/i';
+
+        //perform global regular expression match, ie search the entire web page for a particular thing, and store it in the previously initialised array.
+        preg_match_all($pattern, $html, $matches);
+
+        //store above in array for upcoming bit.
+        return array_values(array_unique($matches[0]));
+    }
 }
