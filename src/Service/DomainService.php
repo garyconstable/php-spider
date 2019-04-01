@@ -13,7 +13,7 @@ class DomainService
     private $em;
     private $container;
     private $domainWorkerPool;
-    private $maxWorkers = 10;
+    private $maxWorkers = 20;
     private $workerType = 'domain_worker';
     private $initiator_id = 0;
 
