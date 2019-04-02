@@ -9,8 +9,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-
-
 use App\Service\DomainService;
 
 
@@ -46,6 +44,8 @@ class DomainInitiatorCommand extends Command
     }
 
     /**
+     *
+     * ==
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null

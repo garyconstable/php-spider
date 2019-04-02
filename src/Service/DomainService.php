@@ -69,16 +69,17 @@ class DomainService
     public function crawlDomain()
     {
         $worker = $this->domainWorkerPool->get();
+
         if($worker)
         {
             $domain = $this->em->getRepository('App:ExternalDomain')->findOneBy( ['visited' => false], ['id' => 'asc'] );
-            if(!$domain){return;}
+            if(!$domain){ return; }
 
             $domain->setVisited(true);
             $this->em->persist($domain);
             $this->em->flush();
 
-            $pid = $this->exeCommand( $domain->getUrl() );
+            $pid = $worker->run( $domain->getUrl() );
             $key = spl_object_hash($worker);
 
             if($this->initiator_id == 0){
@@ -86,35 +87,21 @@ class DomainService
             }
 
             $process = new Process();
-            $process->setPid($pid);
             $process->setParentId($this->initiator_id);
+            $process->setPid($pid);
             $process->setWorkerKey($key);
             $process->setWorkerType($this->workerType);
             $process->setWorkerUrl($domain->getUrl());
             $process->setDateAdd( new \DateTime() );
+
             $this->em->persist($process);
             $this->em->flush();
-
         }
+
         $this->flushWorkers();
         \sleep(1);
         $this->crawlDomain();
     }
-
-    /**
-     * Execute command and return PID
-     * ==
-     * @param string $url
-     * @return string
-     */
-    public function exeCommand($url = '')
-    {
-        $dir =  rtrim(dirname(__DIR__, 2), '/') ;
-        $command = "php " . $dir . "/bin/console spider:worker:domain ".$url." > /dev/null 2>&1 & echo $!;";
-        $pid = exec($command, $output);
-        return $pid;
-    }
-
 
     /**
      * Is the PID running?
@@ -157,7 +144,10 @@ class DomainService
         }
     }
 
-
+    /**
+     *
+     * ==
+     */
     public function assignInitiatorId()
     {
         $inits = $this->em->getRepository('App:Process')->findBy( ['worker_type' => 'domain_initiator'] );

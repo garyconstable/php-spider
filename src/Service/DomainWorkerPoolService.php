@@ -12,6 +12,7 @@ class DomainWorkerPoolService implements \Countable
     private $freeWorkers = [];
 
     /**
+     *
      * DomainWorkerPoolService constructor.
      * ==
      * @param int $poolSize
@@ -25,6 +26,7 @@ class DomainWorkerPoolService implements \Countable
     }
 
     /**
+     *
      * ==
      * @return \App\Service\DomainWorkerService
      */
@@ -45,13 +47,13 @@ class DomainWorkerPoolService implements \Countable
     }
 
     /**
+     *
      * ==
      * @param \App\Service\DomainWorkerService $worker
      */
     public function dispose(DomainWorkerService $worker)
     {
         $key = spl_object_hash($worker);
-
         if (isset($this->occupiedWorkers[$key])) {
             unset($this->occupiedWorkers[$key]);
             $this->freeWorkers[$key] = $worker;
@@ -59,6 +61,7 @@ class DomainWorkerPoolService implements \Countable
     }
 
     /**
+     *
      * ==
      * @param string $key
      */
@@ -71,6 +74,7 @@ class DomainWorkerPoolService implements \Countable
     }
 
     /**
+     *
      * ==
      * @return int
      */
@@ -79,7 +83,11 @@ class DomainWorkerPoolService implements \Countable
         return count($this->occupiedWorkers) + count($this->freeWorkers);
     }
 
-
+    /**
+     *
+     * ==
+     * @param int $max
+     */
     public function setMaxWorkers($max = 0)
     {
         $this->maxPoolSize = $max;
