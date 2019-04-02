@@ -21,7 +21,6 @@ class DomainCrawlerCommand extends Command
     private $domainsService;
     private $entityManager;
     private $container;
-    private $mailer;
 
     /**
      * QueueWorkerCommand constructor.
@@ -89,25 +88,32 @@ class DomainCrawlerCommand extends Command
 
         $worker_type = 'domain_initiator';
         $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => $worker_type ]);
-        $parent_process = false;
-        $can_start = false;
-        $workers_running = 0;
-        $parent_process_id = false;
 
-        //get domain initiator
-        foreach($processes as $process)
-        {
-            $pid = $process->getPid();
-            if( $this->isRunning($pid)  ){
-                $parent_process = $process;
-                break;
+        if(empty($processes)){
+
+            $parent_process = new Process();
+            $parent_process->setWorkerType($worker_type);
+            $parent_process->setWorkerKey($worker_type);
+            $parent_process->setWorkerUrl($worker_type);
+            $parent_process->setDateAdd( new \DateTime() );
+
+        }else{
+
+            //get domain initiator
+            foreach($processes as $process)
+            {
+                $pid = $process->getPid();
+                if( $this->isRunning($pid)  ){
+                    $parent_process = $process;
+                    break;
+                }
             }
         }
 
-        //get workers
-        if($parent_process)
-        {
-            $parent_process_id = $parent_process->getId();
+        $can_start = false;
+        $workers_running = 0;
+        $parent_process_id = $parent_process->getId();
+        if($parent_process_id){
             $process_workers = $this->entityManager->getRepository('App:Process')->findBy(['parent_id' => $parent_process->getId()  ]);
             foreach($process_workers as $worker){
                 $pid = $worker->getPid();
@@ -129,16 +135,11 @@ class DomainCrawlerCommand extends Command
             $command = "php " . $dir . "/bin/console spider:domain:start ".$parent_process_id." > /dev/null 2>&1 & echo $!;";
             $pid = exec($command, $output);
 
-            if(!$parent_process_id)
-            {
-                $process = new Process();
-                $process->setPid($pid);
-                $process->setWorkerType($worker_type);
-                $process->setDateAdd( new \DateTime() );
-
-                $this->entityManager->persist($process);
-                $this->entityManager->flush();
-            }
+            $parent_process->setPid($pid);
+            $parent_process->setDateAdd( new \DateTime() );
+            $parent_process->setParentId(0);
+            $this->entityManager->persist($parent_process);
+            $this->entityManager->flush();
         }
     }
 
