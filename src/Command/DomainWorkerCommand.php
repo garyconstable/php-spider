@@ -30,7 +30,7 @@ class DomainWorkerCommand extends Command
 
     private $current_domain = "";
 
-    private $max_pages_crawled = 100;
+    private $max_pages_crawled = 50;
 
     /**
      * ==

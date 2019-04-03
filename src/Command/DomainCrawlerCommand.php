@@ -6,11 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-//use Symfony\Component\Console\Input\InputArgument;
-//use Symfony\Component\Console\Input\ArrayInput;
-//use Symfony\Component\Console\Output\NullOutput;
-
 use App\Entity\Process;
 
 
@@ -79,6 +74,23 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
+     * Start a new parent process
+     * ==
+     * @param string $worker_type
+     * @return Process
+     * @throws \Exception
+     */
+    public function startProcess($worker_type = '')
+    {
+        $parent_process = new Process();
+        $parent_process->setWorkerType($worker_type);
+        $parent_process->setWorkerKey($worker_type);
+        $parent_process->setWorkerUrl($worker_type);
+        $parent_process->setDateAdd( new \DateTime() );
+        return $parent_process;
+    }
+
+    /**
      * ==
      * @throws \Exception
      */
@@ -91,11 +103,7 @@ class DomainCrawlerCommand extends Command
 
         if(empty($processes)){
 
-            $parent_process = new Process();
-            $parent_process->setWorkerType($worker_type);
-            $parent_process->setWorkerKey($worker_type);
-            $parent_process->setWorkerUrl($worker_type);
-            $parent_process->setDateAdd( new \DateTime() );
+            $parent_process = $this->startProcess($worker_type);
 
         }else{
 
@@ -108,12 +116,19 @@ class DomainCrawlerCommand extends Command
                     break;
                 }
             }
+
+            if( !isset($parent_process) || (isset($parent_process) && empty($parent_process) )){
+                $parent_process = $this->startProcess($worker_type);
+            }
+
         }
 
         $can_start = false;
         $workers_running = 0;
         $parent_process_id = $parent_process->getId();
-        if($parent_process_id){
+
+        if($parent_process_id)
+        {
             $process_workers = $this->entityManager->getRepository('App:Process')->findBy(['parent_id' => $parent_process->getId()  ]);
             foreach($process_workers as $worker){
                 $pid = $worker->getPid();
