@@ -5,9 +5,18 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use \Swift_Mailer;
+
 
 class IndexController extends AbstractController
 {
+    public $mailer;
+
+    function __construct(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     /**
      * ==
      * @param array $data
@@ -42,5 +51,31 @@ class IndexController extends AbstractController
                 'workers'   => $workers[0]['total'],
             ]
         ]);
+    }
+
+    /**
+     * @Route("/emailtest", name="email_test")
+     */
+    public function emailTest()
+    {
+
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('garyconstable80@gmail.com')
+            ->setTo('garyconstable80@gmail.com')
+            ->setBody(
+            'Hello this is a test',
+            'text/html'
+            )
+            ;
+
+        try{
+            $this->mailer->send($message);
+        }catch(\Exception $ex){
+            echo $ex->getMessage();
+            die();
+        }
+
+        return new JsonResponse('hello');
+
     }
 }
