@@ -11,9 +11,6 @@ use App\Service\UrlService;
 use App\Entity\ExternalDomain;
 use App\Entity\Email;
 
-
-
-
 class DomainWorkerCommand extends Command
 {
     protected static $defaultName = 'spider:worker:domain';
@@ -50,10 +47,10 @@ class DomainWorkerCommand extends Command
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -95,15 +92,13 @@ class DomainWorkerCommand extends Command
      */
     public function getNextInternalLink()
     {
-        foreach( $this->internal_links as &$item )
-        {
-            if($item['visited'] == false )
-            {
+        foreach ($this->internal_links as &$item) {
+            if ($item['visited'] == false) {
                 $item['visited'] = true;
                 return $item['link'];
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -111,16 +106,12 @@ class DomainWorkerCommand extends Command
      * ==
      * @throws \Exception
      */
-    function linkRunner()
+    public function linkRunner()
     {
         $url = $this->getNextInternalLink();
-
         $this->max_pages_crawled -= 1;
-
-        if( FALSE !== $url &&  $this->max_pages_crawled > 0){
-
+        if (false !== $url &&  $this->max_pages_crawled > 0) {
             $this->scrapePage($url);
-
             $this->linkRunner();
         }
     }
@@ -134,18 +125,17 @@ class DomainWorkerCommand extends Command
     public function getPage($url = "")
     {
         try {
-            $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
+            $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 
+            (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
             $ctx = stream_context_create(array(
                     'http' => array(
                         'timeout' => 1,
                         'method' => "GET",
                         'header' => "Accept-language: en\r\n" .
                             "Cookie: foo=bar\r\n" .
-                            "User-Agent: " . $header_str . "\r\n"
-                    ))
-            );
+                            "User-Agent: " . $header_str . "\r\n")));
             return file_get_contents($url, false, $ctx);
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
             return false;
         }
     }
@@ -156,33 +146,28 @@ class DomainWorkerCommand extends Command
      * @param array $links
      * @param bool $internal
      */
-    function addLink( $links = [], $internal = true )
+    public function addLink($links = [], $internal = true)
     {
-        if($internal){
+        if ($internal) {
             $arr = &$this->internal_links;
-        }else{
+        } else {
             $arr = &$this->external_links;
         }
 
-        foreach($links as $link)
-        {
-            if(empty($arr)){
+        foreach ($links as $link) {
+            if (empty($arr)) {
                 $arr[] = [
                     'link'      => $link,
                     'visited'   => false
                 ];
-            }else{
-
+            } else {
                 $found = false;
-
-                foreach( $arr as $item )
-                {
-                    if( $link == $item['link']) {
+                foreach ($arr as $item) {
+                    if ($link == $item['link']) {
                         $found = true;
                     }
                 }
-
-                if(!$found){
+                if (!$found) {
                     $arr[] = [
                         'link'      => $link,
                         'visited'   => false
@@ -198,7 +183,7 @@ class DomainWorkerCommand extends Command
      * @param string $url
      * @throws \Exception
      */
-    public function scrapePage( $url = "" )
+    public function scrapePage($url = "")
     {
         $html = $this->getPage($url);
 
@@ -222,10 +207,8 @@ class DomainWorkerCommand extends Command
      */
     public function addEmails($emails)
     {
-        foreach($emails as $email)
-        {
-            if(!in_array($email, $this->emails))
-            {
+        foreach ($emails as $email) {
+            if (!in_array($email, $this->emails)) {
                 $this->emails[] = $email;
             }
         }
@@ -236,21 +219,19 @@ class DomainWorkerCommand extends Command
      * ==
      * @param string $domain_name
      */
-    public function addDomain( $domain_name = "" )
+    public function addDomain($domain_name = "")
     {
-
-        if(!\is_null($domain_name) && $domain_name ){
+        if (!\is_null($domain_name) && $domain_name) {
             try {
                 $domain = new ExternalDomain();
                 $domain->setUrl($domain_name);
                 $domain->setVisited(false);
-                $domain->setDateAdd( new \DateTime() );
+                $domain->setDateAdd(new \DateTime());
                 $this->em->persist($domain);
                 $this->em->flush();
-            }catch (UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException $e) {
                 $this->em = $this->container->get('doctrine')->resetManager();
-            }catch(\Exception $ex){
-
+            } catch (\Exception $ex) {
             }
         }
     }
@@ -261,8 +242,7 @@ class DomainWorkerCommand extends Command
      */
     public function saveExternalLinks()
     {
-        foreach( $this->external_links as $link )
-        {
+        foreach ($this->external_links as $link) {
             $this->addDomain($link['link']);
         }
     }
@@ -274,18 +254,15 @@ class DomainWorkerCommand extends Command
     public function saveEmails()
     {
         $this->em = $this->container->get('doctrine')->resetManager();
-
-        foreach( $this->emails as $addr )
-        {
+        foreach ($this->emails as $addr) {
             try {
                 $email = new Email();
                 $email->setEmail($addr);
                 $this->em->persist($email);
                 $this->em->flush();
-            }catch (UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException $e) {
                 $this->em = $this->container->get('doctrine')->resetManager();
-            }catch(\Exception $ex){
-
+            } catch (\Exception $ex) {
             }
         }
     }

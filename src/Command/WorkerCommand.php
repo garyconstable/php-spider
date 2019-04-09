@@ -6,10 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Symfony\Component\Process\Process;
-
-
 
 class WorkerCommand extends Command
 {
@@ -36,7 +33,9 @@ class WorkerCommand extends Command
      * Add settings here..
      * ==
      */
-    protected function configure(){}
+    protected function configure()
+    {
+    }
 
     /**
      * Debugger
@@ -44,10 +43,10 @@ class WorkerCommand extends Command
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -62,8 +61,8 @@ class WorkerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $running_processes = $this->getCurrentNumberOfWorkers();
-        if($running_processes < $this->max_workers) {
-            return $this->saveWorker( $this->execQueueWorker() );
+        if ($running_processes < $this->max_workers) {
+            return $this->saveWorker($this->execQueueWorker());
         }
         return true;
     }
@@ -95,11 +94,11 @@ class WorkerCommand extends Command
     {
         try {
             $result = shell_exec(sprintf('ps %d', $pid));
-            if(count(preg_split("/\n/", $result)) > 2) {
+            if (count(preg_split("/\n/", $result)) > 2) {
                 return true;
             }
-        } catch(Exception $e) {}
-
+        } catch (\Exception $e) {
+        }
         return false;
     }
 
@@ -112,20 +111,16 @@ class WorkerCommand extends Command
     {
         $num = 0;
         $processes = $this->em->getRepository('App:Process')->findBy(['worker_type' => $this->worker_type]);
-        if(empty($processes)){
+        if (empty($processes)) {
             return 0;
         }
-        foreach($processes as $process){
-
+        foreach ($processes as $process) {
             $pid = $process->getPid();
-
-            if( !$this->isRunning($pid))
-            {
-                $proc = $this->em->getRepository('App:Process')->find( $process->getID() );
+            if (!$this->isRunning($pid)) {
+                $proc = $this->em->getRepository('App:Process')->find($process->getID());
                 $this->em->remove($proc);
                 $this->em->flush();
-
-            }else{
+            } else {
                 $num += 1;
             }
         }

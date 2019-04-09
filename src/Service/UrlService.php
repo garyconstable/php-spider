@@ -10,10 +10,10 @@ class UrlService
      * @param array $data
      * @param bool $die
      */
-    public static function d($data = [], $die = TRUE)
+    public static function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -25,7 +25,7 @@ class UrlService
      * @param string $haystack
      * @return bool
      */
-    public function startsWith( $needle = "", $haystack = "" )
+    public static function startsWith($needle = "", $haystack = "")
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
@@ -38,7 +38,7 @@ class UrlService
      * @param string $haystack
      * @return bool
      */
-    public function endsWith( $needle = "", $haystack = "" )
+    public static function endsWith($needle = "", $haystack = "")
     {
         $length = strlen($needle);
         if ($length == 0) {
@@ -53,10 +53,10 @@ class UrlService
      * @param string $url
      * @return mixed
      */
-    public function getDomain( $url = "")
+    public static function getDomain($url = "")
     {
         $parts = \parse_url($url);
-        return isset($parts['host']) ? $parts['host'] : FALSE;
+        return isset($parts['host']) ? $parts['host'] : false;
     }
 
     /**
@@ -65,10 +65,10 @@ class UrlService
      * @param string $url
      * @return string
      */
-    public function getDomainWithPrefix( $url = "")
+    public static function getDomainWithPrefix($url = "")
     {
         $parts = \parse_url($url);
-        if(!isset($parts['scheme'])){
+        if (!isset($parts['scheme'])) {
             $parts['scheme'] = 'http';
         }
         return isset($parts['host']) ? $parts['scheme'] . '://' . $parts['host'] : $url;
@@ -80,12 +80,12 @@ class UrlService
      * @param string $url
      * @return bool|string
      */
-    public static function removeQueryString( $url = "" )
+    public static function removeQueryString($url = "")
     {
         try {
             $parts = parse_url($url);
             return $parts['scheme'] . '://' . $parts['host'] . $parts['path'];
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
             return false;
         }
     }
@@ -96,7 +96,7 @@ class UrlService
      * @param string $url
      * @return false|int
      */
-    public static function isImageFile( $url = "")
+    public static function isImageFile($url = "")
     {
         return preg_match("/^[^\?]+\.(pdf|jpg|jpeg|gif|png)(?:\?|$)/", $url);
     }
@@ -114,28 +114,17 @@ class UrlService
         $dom = new \DOMDocument;
         @$dom->loadHTML($html);
         $links = $dom->getElementsByTagName('a');
-        foreach ($links as $link)
-        {
+        foreach ($links as $link) {
             $href = $link->getAttribute('href');
-
-            if ( !UrlService::startsWith('#', $href) && $href != '/' )
-            {
-                if( UrlService::startsWith( "http:", $href ) || UrlService::startsWith('https:', $href ) )
-                {
+            if (!UrlService::startsWith('#', $href) && $href != '/') {
+                if (UrlService::startsWith("http:", $href) || UrlService::startsWith('https:', $href)) {
                     $link_domain = self::getDomain($href);
-
-                    if( $link_domain != $current_domain ){
-
+                    if ($link_domain != $current_domain) {
                         $cleanedUrl =   self::removeQueryString($href);
-
                         $cleanedUrl = self::getDomainWithPrefix($cleanedUrl);
-
-                        if( FALSE !== $cleanedUrl ){
-
-                            if( !self::isImageFile( $cleanedUrl) ){
-
+                        if (false !== $cleanedUrl) {
+                            if (!self::isImageFile($cleanedUrl)) {
                                 $ret[] = $cleanedUrl;
-
                                 //$ret[] = $link_domain;
                             }
                         }
@@ -143,17 +132,15 @@ class UrlService
                 }
             }
         }
-
         $ret = array_unique($ret);
-
         return $ret;
     }
-
 
     /**
      * Get External Links
      * ==
      * @param string $html
+     * @param bool $current_domain
      * @return array
      */
     public static function getInternalLinks($html = "", $current_domain = false)
@@ -162,24 +149,16 @@ class UrlService
         $dom = new \DOMDocument;
         @$dom->loadHTML($html);
         $links = $dom->getElementsByTagName('a');
-        foreach ($links as $link)
-        {
+        foreach ($links as $link) {
             $href = $link->getAttribute('href');
 
-            if ( !UrlService::startsWith('#', $href) && $href != '/' )
-            {
-                if( UrlService::startsWith( "http:", $href ) || UrlService::startsWith('https:', $href ) )
-                {
+            if (!UrlService::startsWith('#', $href) && $href != '/') {
+                if (UrlService::startsWith("http:", $href) || UrlService::startsWith('https:', $href)) {
                     $link_domain = self::getDomain($href);
-
-                    if( $link_domain == $current_domain ){
-
+                    if ($link_domain == $current_domain) {
                         $cleanedUrl = self::removeQueryString($href);
-
-                        if( FALSE !== $cleanedUrl ){
-
-                            if( !self::isImageFile( $cleanedUrl) ){
-
+                        if (false !== $cleanedUrl) {
+                            if (!self::isImageFile($cleanedUrl)) {
                                 $ret[] = $cleanedUrl;
                             }
                         }
@@ -187,9 +166,7 @@ class UrlService
                 }
             }
         }
-
         $ret = array_unique($ret);
-
         return $ret;
     }
 
@@ -199,7 +176,7 @@ class UrlService
      * @param $html
      * @return array
      */
-    public function getEmails($html)
+    public static function getEmails($html)
     {
         //initialise an empty array.
         $matches = array();
@@ -207,7 +184,8 @@ class UrlService
         //regular expression that matches most email addresses, courtesy of @Eric-Karl.
         $pattern = '/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}/i';
 
-        //perform global regular expression match, ie search the entire web page for a particular thing, and store it in the previously initialised array.
+        //perform global regular expression match,
+        // ie search the entire web page for a particular thing, and store it in the previously initialised array.
         preg_match_all($pattern, $html, $matches);
 
         //store above in array for upcoming bit.

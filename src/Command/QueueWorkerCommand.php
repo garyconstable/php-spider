@@ -8,9 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-
 use App\Entity\Pending;
-
 
 class QueueWorkerCommand extends Command
 {
@@ -41,7 +39,9 @@ class QueueWorkerCommand extends Command
      * Add settings here..
      * ==
      */
-    protected function configure(){}
+    protected function configure()
+    {
+    }
 
     /**
      * Command Entry Point
@@ -62,10 +62,10 @@ class QueueWorkerCommand extends Command
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -79,7 +79,8 @@ class QueueWorkerCommand extends Command
     public function getPage($url = "")
     {
         try {
-            $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
+            $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 
+            (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
             $ctx = stream_context_create(array(
                     'http' => array(
                         'timeout' => 1,
@@ -87,10 +88,9 @@ class QueueWorkerCommand extends Command
                         'header' => "Accept-language: en\r\n" .
                             "Cookie: foo=bar\r\n" .
                             "User-Agent: " . $header_str . "\r\n"
-                    ))
-            );
+                    )));
             return file_get_contents($url, false, $ctx);
-        }catch(\Exception $ex){
+        } catch (\Exception $ex) {
             return false;
         }
     }
@@ -100,11 +100,11 @@ class QueueWorkerCommand extends Command
      * ==
      * @return array
      */
-    public function build_queue()
+    public function buildQueue()
     {
         $queue = [];
         $batch = $this->em->getRepository('App:Queue')->getBatch($this->batch);
-        foreach($batch as $item){
+        foreach ($batch as $item) {
             $queue[] = [
                 'id'    => $item->getId(),
                 'url'   => $item->getUrl()
@@ -123,17 +123,16 @@ class QueueWorkerCommand extends Command
      * @return bool
      * @throws \Exception
      */
-    public function save_page($page = "", $url = "")
+    public function savePage($page = "", $url = "")
     {
         $milliseconds = round(microtime(true) * 1000);
         $file = $milliseconds . ".txt";
         $filename = $this->pending_path . $file;
-        if( file_put_contents($filename, $page) )
-        {
+        if (file_put_contents($filename, $page)) {
             $pending = new Pending();
             $pending->setFilename($file);
             $pending->setUrl($url);
-            $pending->setDateAdd( new \DateTime() );
+            $pending->setDateAdd(new \DateTime());
             $this->em->persist($pending);
             $this->em->flush();
             return true;
@@ -147,15 +146,14 @@ class QueueWorkerCommand extends Command
      * @param int $attempt
      * @throws \Exception
      */
-    public function process_queue( $attempt = 0)
+    public function processQueue($attempt = 0)
     {
-        $pending = $this->build_queue();
+        $pending = $this->buildQueue();
         $index = 0;
-        foreach($pending as $item)
-        {
+        foreach ($pending as $item) {
             $page = $this->getPage($item['url']);
-            if($page){
-                if( $this->save_page( $page, $item['url'] ) ){
+            if ($page) {
+                if ($this->savePage($page, $item['url'])) {
                     $index++;
                     echo ("[+] Batch: "  . $attempt . ", Page " . $index . ", Url: " . $item['url']) . PHP_EOL;
                 }
@@ -169,7 +167,7 @@ class QueueWorkerCommand extends Command
      * ==
      * @return int
      */
-    public function get_queue_length()
+    public function getQueueLength()
     {
         $all = $this->em->getRepository('App:Queue')->tableSize();
         return isset($all[0]['total']) ? $all[0]['total'] : 0;
@@ -181,14 +179,14 @@ class QueueWorkerCommand extends Command
      * @param int $attempt
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function queueRunner( $attempt = 0 )
+    public function queueRunner($attempt = 0)
     {
-        $queue_size = $this->get_queue_length();
-        if($queue_size > 0){
-            $this->process_queue($attempt);
+        $queue_size = $this->getQueueLength();
+        if ($queue_size > 0) {
+            $this->processQueue($attempt);
             $attempt++;
-            $queue_size = $this->get_queue_length();
-            if($queue_size > 0) {
+            $queue_size = $this->getQueueLength();
+            if ($queue_size > 0) {
                 $this->queueRunner($attempt);
             }
         }

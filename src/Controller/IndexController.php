@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use \Swift_Mailer;
-
 
 class IndexController extends AbstractController
 {
-    public $mailer;
+    public $logger;
 
-    function __construct(\Swift_Mailer $mailer)
+    /**
+     * IndexController constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
     {
-        $this->mailer = $mailer;
+        $this->logger = new $logger('channel-name');
     }
 
     /**
@@ -22,10 +25,10 @@ class IndexController extends AbstractController
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -51,31 +54,5 @@ class IndexController extends AbstractController
                 'workers'   => $workers[0]['total'],
             ]
         ]);
-    }
-
-    /**
-     * @Route("/emailtest", name="email_test")
-     */
-    public function emailTest()
-    {
-
-        $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('garyconstable80@gmail.com')
-            ->setTo('garyconstable80@gmail.com')
-            ->setBody(
-            'Hello this is a test',
-            'text/html'
-            )
-            ;
-
-        try{
-            $this->mailer->send($message);
-        }catch(\Exception $ex){
-            echo $ex->getMessage();
-            die();
-        }
-
-        return new JsonResponse('hello');
-
     }
 }

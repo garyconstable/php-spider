@@ -5,33 +5,39 @@
     "cron/cron-bundle": {
         "version": "2.1.0"
     },
-    "egulias/email-validator": {
-        "version": "2.1.7"
+    "monolog/monolog": {
+        "version": "1.24.0"
     },
-    "swiftmailer/swiftmailer": {
-        "version": "v6.2.0"
+    "squizlabs/php_codesniffer": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
+        },
+        "files": [
+            "phpcs.xml.dist"
+        ]
     },
-    "symfony/polyfill-intl-idn": {
-        "version": "v1.11.0"
+    "symfony/monolog-bridge": {
+        "version": "v4.2.5"
     },
-    "symfony/polyfill-php72": {
-        "version": "v1.11.0"
-    },
-    "symfony/proxy-manager-bridge": {
-        "version": "v4.2.4"
-    },
-    "symfony/swiftmailer-bundle": {
-        "version": "2.5",
+    "symfony/monolog-bundle": {
+        "version": "3.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.5",
-            "ref": "3db029c03e452b4a23f7fc45cec7c922c2247eb8"
+            "version": "3.1",
+            "ref": "18ebf5a940573a20de06f9c4060101eeb438cf3d"
         },
         "files": [
-            "config/packages/dev/swiftmailer.yaml",
-            "config/packages/swiftmailer.yaml",
-            "config/packages/test/swiftmailer.yaml"
+            "config/packages/dev/monolog.yaml",
+            "config/packages/prod/monolog.yaml",
+            "config/packages/test/monolog.yaml"
         ]
+    },
+    "symfony/proxy-manager-bridge": {
+        "version": "v4.2.4"
     }
 }

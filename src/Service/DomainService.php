@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Service;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Entity\ExternalDomain;
 use App\Entity\Process;
 use App\Service\DomainWorkerPoolService;
-
 
 class DomainService
 {
@@ -34,10 +33,10 @@ class DomainService
      * @param array $data
      * @param bool $die
      */
-    public static function d($data = [], $die = TRUE)
+    public static function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>' . print_r($data, true) . '</pre>';
+        if ($die) {
             die();
         }
     }
@@ -49,17 +48,17 @@ class DomainService
      */
     public function startDomainCrawler($initiator_id = false)
     {
-        if($initiator_id){
+        if ($initiator_id) {
             $this->initiator_id = $initiator_id;
         }
 
-        echo '--> Start Domain Crawler: '.PHP_EOL;
+        echo '--> Start Domain Crawler: ' . PHP_EOL;
         $this->domainWorkerPool = new DomainWorkerPoolService($this->maxWorkers);
         $this->flushWorkers();
         $this->crawlDomain();
         sleep($this->maxWorkers);
         $this->flushWorkers();
-        echo '--> End Domain Crawler: '.PHP_EOL;
+        echo '--> End Domain Crawler: ' . PHP_EOL;
     }
 
     /**
@@ -69,20 +68,20 @@ class DomainService
     public function crawlDomain()
     {
         $worker = $this->domainWorkerPool->get();
-
-        if($worker)
-        {
-            $domain = $this->em->getRepository('App:ExternalDomain')->findOneBy( ['visited' => false], ['id' => 'asc'] );
-            if(!$domain){ return; }
+        if ($worker) {
+            $domain = $this->em->getRepository('App:ExternalDomain')->findOneBy(['visited' => false], ['id' => 'asc']);
+            if (!$domain) {
+                return;
+            }
 
             $domain->setVisited(true);
             $this->em->persist($domain);
             $this->em->flush();
 
-            $pid = $worker->run( $domain->getUrl() );
+            $pid = $worker->run($domain->getUrl());
             $key = spl_object_hash($worker);
 
-            if($this->initiator_id == 0){
+            if ($this->initiator_id == 0) {
                 $this->assignInitiatorId();
             }
 
@@ -92,7 +91,7 @@ class DomainService
             $process->setWorkerKey($key);
             $process->setWorkerType($this->workerType);
             $process->setWorkerUrl($domain->getUrl());
-            $process->setDateAdd( new \DateTime() );
+            $process->setDateAdd(new \DateTime());
 
             $this->em->persist($process);
             $this->em->flush();
@@ -113,10 +112,11 @@ class DomainService
     {
         try {
             $result = shell_exec(sprintf('ps %d', $pid));
-            if(count(preg_split("/\n/", $result)) > 2) {
+            if (count(preg_split("/\n/", $result)) > 2) {
                 return true;
             }
-        } catch(Exception $e) {}
+        } catch (Exception $e) {
+        }
 
         return false;
     }
@@ -128,14 +128,12 @@ class DomainService
     public function flushWorkers()
     {
         $processes = $this->em->getRepository('App:Process')->findAll();
-        if(empty($processes)){
+        if (empty($processes)) {
             return false;
         }
-        foreach($processes as $process)
-        {
+        foreach ($processes as $process) {
             $pid = $process->getPid();
-            if(!$this->isRunning($pid))
-            {
+            if (!$this->isRunning($pid)) {
                 $key = $process->getWorkerKey();
                 $this->em->remove($process);
                 $this->em->flush();
@@ -150,8 +148,8 @@ class DomainService
      */
     public function assignInitiatorId()
     {
-        $inits = $this->em->getRepository('App:Process')->findBy( ['worker_type' => 'domain_initiator'] );
-        foreach($inits as $i){
+        $inits = $this->em->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator']);
+        foreach ($inits as $i) {
             $this->initiator_id = $i->getId();
         }
     }

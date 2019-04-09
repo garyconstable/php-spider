@@ -7,8 +7,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
-
-
 use Symfony\Component\Process\Process;
 
 class WorkerStopPidCommand extends Command
@@ -46,10 +44,10 @@ class WorkerStopPidCommand extends Command
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -75,8 +73,8 @@ class WorkerStopPidCommand extends Command
     {
         $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
         exec($command, $output);
-        $proc = $this->em->getRepository('App:Process')->findBy( ['pid' => $pid ] );
-        foreach($proc as $p ){
+        $proc = $this->em->getRepository('App:Process')->findBy(['pid' => $pid ]);
+        foreach ($proc as $p) {
             $this->em->remove($p);
             $this->em->flush();
         }

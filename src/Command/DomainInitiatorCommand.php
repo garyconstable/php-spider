@@ -44,7 +44,7 @@ class DomainInitiatorCommand extends Command
     }
 
     /**
-     *
+     * Execute
      * ==
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -55,7 +55,7 @@ class DomainInitiatorCommand extends Command
     {
         $param = 0;
         $initiator_id = $input->getArgument('initiator_process_id');
-        if( $initiator_id ){
+        if ($initiator_id) {
             $param =  $initiator_id;
         }
         $this->domainsService->startDomainCrawler($param);

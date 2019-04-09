@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Service;
+
 use App\Service\DomainWorkerService;
-
-
 
 class DomainWorkerPoolService implements \Countable
 {
@@ -17,10 +16,10 @@ class DomainWorkerPoolService implements \Countable
      * ==
      * @param int $poolSize
      */
-    public function __construct( $poolSize = 0 )
+    public function __construct($poolSize = 0)
     {
         $this->maxPoolSize = $poolSize;
-        for($i=0;$i<$poolSize;$i++){
+        for ($i=0; $i<$poolSize; $i++) {
             $this->freeWorkers[] = new DomainWorkerService();
         }
     }
@@ -32,13 +31,13 @@ class DomainWorkerPoolService implements \Countable
      */
     public function get()
     {
-        if (count($this->freeWorkers) == 0 && count($this->occupiedWorkers) < $this->maxPoolSize ) {
+        if (count($this->freeWorkers) == 0 && count($this->occupiedWorkers) < $this->maxPoolSize) {
             $worker = new DomainWorkerService();
         } else {
             $worker = array_pop($this->freeWorkers);
         }
 
-        if(!is_null($worker)) {
+        if (!is_null($worker)) {
             $this->occupiedWorkers[spl_object_hash($worker)] = $worker;
             return $worker;
         }

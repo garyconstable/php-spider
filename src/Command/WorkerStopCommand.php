@@ -6,7 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Symfony\Component\Process\Process;
 
 class WorkerStopCommand extends Command
@@ -33,7 +32,9 @@ class WorkerStopCommand extends Command
      * Add settings here..
      * ==
      */
-    protected function configure(){}
+    protected function configure()
+    {
+    }
 
     /**
      * Debugger
@@ -41,10 +42,10 @@ class WorkerStopCommand extends Command
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -74,7 +75,6 @@ class WorkerStopCommand extends Command
         $proc->setDateAdd(new \DateTime());
         $this->em->persist($proc);
         $this->em->flush();
-
     }
 
     /**
@@ -86,23 +86,19 @@ class WorkerStopCommand extends Command
         $idx    = 0;
         $limit  = 1;
         $processes = $this->em->getRepository('App:Process')->findAll();
-        if(empty($processes)){
+        if (empty($processes)) {
             return false;
         }
-        foreach($processes as $process)
-        {
-            if($idx == $limit){
+        foreach ($processes as $process) {
+            if ($idx == $limit) {
                 continue;
             }
-
             $pid = $process->getPid();
             $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
             exec($command, $output);
-
-            $proc = $this->em->getRepository('App:Process')->find( $process->getID() );
+            $proc = $this->em->getRepository('App:Process')->find($process->getID());
             $this->em->remove($proc);
             $this->em->flush();
-
             $idx++;
         }
         return true;

@@ -15,3 +15,7 @@
 data/pending/*.txt
 data/processed/*.txt
 .idea/*
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###

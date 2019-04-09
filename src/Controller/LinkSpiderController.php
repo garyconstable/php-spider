@@ -23,10 +23,10 @@ class LinkSpiderController extends AbstractController
      * @param array $data
      * @param bool $die
      */
-    public function d($data = [], $die = TRUE)
+    public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, TRUE).'</pre>';
-        if($die){
+        echo '<pre>'.print_r($data, true).'</pre>';
+        if ($die) {
             die();
         }
     }
@@ -34,7 +34,7 @@ class LinkSpiderController extends AbstractController
     /**
      * @Route("/link/spider/status", name="link_spider_status")
      */
-    public function spider_status()
+    public function spiderStatus()
     {
         $em = $this->getDoctrine()->getManager();
         $domains    = $em->getRepository('App:Domains')->tableSize();
@@ -43,7 +43,7 @@ class LinkSpiderController extends AbstractController
         $tmp        = $em->getRepository('App:Process')->findBy(['worker_type' => 'spider_worker']);
         $workers    = [];
 
-        foreach($tmp as $worker){
+        foreach ($tmp as $worker) {
             $workers[] = [
                 'id'            => $worker->getId(),
                 'pid'           => $worker->getPid(),
@@ -63,7 +63,7 @@ class LinkSpiderController extends AbstractController
     /**
      * @Route("/link/spider/start", name="link_spider_start")
      */
-    public function spider_start()
+    public function spiderStart()
     {
         $dir =  rtrim(dirname(__DIR__, 2), '/') ;
         $command = "php " . $dir . "/bin/console spider:worker > /dev/null 2>&1 & echo $!;";
@@ -77,13 +77,13 @@ class LinkSpiderController extends AbstractController
     /**
      * @Route("/link/spider/stop", name="link_spider_stop")
      */
-    public function spider_stop()
+    public function spiderStop()
     {
         $pid = false;
-        if(isset($_GET['pid'])){
+        if (isset($_GET['pid'])) {
             $pid = $_GET['pid'];
         }
-        if($pid){
+        if ($pid) {
             $dir =  rtrim(dirname(__DIR__, 2), '/') ;
             $command = "php " . $dir . "/bin/console spider:worker:stop_pid ".$pid." > /dev/null 2>&1 & echo $!;";
             $pid = exec($command, $output);
