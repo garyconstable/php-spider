@@ -39,6 +39,29 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
+     * Remove any worker process that has been running for over 15 minutes.
+     * ==
+     */
+    public function cleanupProcess()
+    {
+        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker' ]);
+
+        foreach ($processes as $process) {
+            $date = $process->getDateAdd();
+            $diff = $date->diff(new \Datetime('now'));
+
+            if ($diff->h > 1 || $diff->i > 15) {
+                $this->d('$diff', 1);
+                $pid = $process->getPid();
+                $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
+                exec($command, $output);
+                $this->entityManager->remove($process);
+                $this->entityManager->flush();
+            }
+        }
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
@@ -46,6 +69,8 @@ class DomainCrawlerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->cleanupProcess();
+
         $this->execInitiator();
     }
 
@@ -167,7 +192,6 @@ class DomainCrawlerCommand extends Command
      */
     public function logExec()
     {
-        // $this->logger->info('==> spider:domain:crawl: Run');
         $l = new Log();
         $l->setMessage('==> spider:domain:crawl: Run');
         $l->setDateAdd(new \DateTime());
