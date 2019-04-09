@@ -1,0 +1,50 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    memcached:
+      image: memcached:alpine
+      container_name: ghostfrog-memcached
+
+    redis:
+      image: redis:alpine
+      container_name: ghostfrog-redis
+
+    mariadb:
+      image: mariadb:10.4
+      container_name: ghostfrog-mariadb
+      working_dir: /application
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=ghostfrog_v1
+        - MYSQL_USER=ghostfrog_usr
+        - MYSQL_PASSWORD=root
+      ports:
+        - "8184:3306"
+
+    elasticsearch:
+      image: elasticsearch:6.5.4
+      container_name: ghostfrog-elasticsearch
+
+    webserver:
+      image: nginx:alpine
+      container_name: ghostfrog-webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "8181:80"
+
+    php-fpm:
+      build: phpdocker/php-fpm
+      container_name: ghostfrog-php-fpm
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
+
