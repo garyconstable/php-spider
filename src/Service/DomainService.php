@@ -122,6 +122,7 @@ class DomainService
     }
 
     /**
+     * Remove any dead processes
      * ==
      * @return bool
      */
@@ -143,7 +144,7 @@ class DomainService
     }
 
     /**
-     *
+     * Assign the parent ID to the process
      * ==
      */
     public function assignInitiatorId()

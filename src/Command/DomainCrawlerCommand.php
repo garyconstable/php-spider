@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Entity\Process;
-use App\Entity\Log;
 use Psr\Log\LoggerInterface;
 
 class DomainCrawlerCommand extends Command
@@ -61,6 +60,22 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
+     * Kill the initiator processes
+     * ==
+     */
+    public function endInitiators()
+    {
+        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator' ]);
+        foreach ($processes as $process) {
+            $pid = $process->getPid();
+            $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
+            exec($command, $output);
+            $this->entityManager->remove($process);
+            $this->entityManager->flush();
+        }
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
@@ -69,7 +84,7 @@ class DomainCrawlerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->cleanupProcess();
-
+        $this->endInitiators();
         $this->execInitiator();
     }
 
@@ -85,25 +100,6 @@ class DomainCrawlerCommand extends Command
         if ($die) {
             die();
         }
-    }
-
-    /**
-     * Is the PID running?
-     * ==
-     * @param $pid
-     * @return bool
-     */
-    public function isRunning($pid)
-    {
-        try {
-            $result = shell_exec(sprintf('ps %d', $pid));
-            if (count(preg_split("/\n/", $result)) > 2) {
-                return true;
-            }
-        } catch (\Exception $e) {
-        }
-
-        return false;
     }
 
     /**
@@ -129,72 +125,15 @@ class DomainCrawlerCommand extends Command
      */
     public function execInitiator()
     {
-        $this->logExec();
+        $dir =  rtrim(dirname(__DIR__, 2), '/') ;
+        $command = "php " . $dir . "/bin/console spider:domain:start > /dev/null 2>&1 & echo $!;";
+        $pid = exec($command, $output);
 
-        $worker_type = 'domain_initiator';
-        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => $worker_type ]);
-
-        if (empty($processes)) {
-            $parent_process = $this->startProcess($worker_type);
-        } else {
-            //get domain initiator
-            foreach ($processes as $process) {
-                $pid = $process->getPid();
-                if ($this->isRunning($pid)) {
-                    $parent_process = $process;
-                    break;
-                }
-            }
-            if (!isset($parent_process) || (isset($parent_process) && empty($parent_process))) {
-                $parent_process = $this->startProcess($worker_type);
-            }
-        }
-
-        $can_start = false;
-        $workers_running = 0;
-        $parent_process_id = $parent_process->getId();
-
-        if ($parent_process_id) {
-            $process_workers = $this->entityManager->getRepository('App:Process')
-                ->findBy(['parent_id' => $parent_process->getId()  ]);
-            foreach ($process_workers as $worker) {
-                $pid = $worker->getPid();
-                if ($this->isRunning($pid)) {
-                    $workers_running += 1;
-                }
-            }
-        }
-
-        //if no workers
-        if ($workers_running < 1) {
-            $can_start = true;
-        }
-
-        //can start no workers
-        if ($can_start) {
-            $dir =  rtrim(dirname(__DIR__, 2), '/') ;
-            $command = "php " . $dir . "/bin/console spider:domain:start "
-                .$parent_process_id." > /dev/null 2>&1 & echo $!;";
-            $pid = exec($command, $output);
-
-            $parent_process->setPid($pid);
-            $parent_process->setDateAdd(new \DateTime());
-            $parent_process->setParentId(0);
-            $this->entityManager->persist($parent_process);
-            $this->entityManager->flush();
-        }
-    }
-
-    /**
-     * Log the action.
-     * ==
-     */
-    public function logExec()
-    {
-        $l = new Log();
-        $l->setMessage('==> spider:domain:crawl: Run');
-        $l->setDateAdd(new \DateTime());
-        $this->entityManager->persist($l);
+        $parent_process = $this->startProcess('domain_initiator');
+        $parent_process->setPid($pid);
+        $parent_process->setDateAdd(new \DateTime());
+        $parent_process->setParentId(0);
+        $this->entityManager->persist($parent_process);
         $this->entityManager->flush();
     }
 }
