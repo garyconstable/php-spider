@@ -167,8 +167,7 @@ class DomainCrawlerCommand extends Command
      */
     public function logExec()
     {
-        $this->logger->info('==> spider:domain:crawl: Run');
-
+        // $this->logger->info('==> spider:domain:crawl: Run');
         $l = new Log();
         $l->setMessage('==> spider:domain:crawl: Run');
         $l->setDateAdd(new \DateTime());
