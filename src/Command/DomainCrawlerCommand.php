@@ -50,8 +50,7 @@ class DomainCrawlerCommand extends Command
             $date = $process->getDateAdd();
             $diff = $date->diff(new \Datetime('now'));
 
-            if ($diff->h > 1 || $diff->i > 15) {
-                $this->d('$diff', 1);
+            if ($diff->h > 0 || $diff->i > 15) {
                 $pid = $process->getPid();
                 $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
                 exec($command, $output);
