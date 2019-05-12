@@ -24,7 +24,7 @@ class DomainSpiderController extends AbstractController
     public function spiderStatus()
     {
         $em = $this->getDoctrine()->getManager();
-        $domains    = $em->getRepository('App:ExternalDomain')->tableSize();
+        //$domains    = $em->getRepository('App:ExternalDomain')->tableSize();
         $queue      = $em->getRepository('App:Queue')->tableSize();
         $pending    = $em->getRepository('App:Pending')->tableSize();
         $tmp        = $em->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker']);
@@ -41,7 +41,7 @@ class DomainSpiderController extends AbstractController
         }
 
         return new JsonResponse(array(
-            'domains'   => $domains[0]['total'],
+            'domains'   => 'loading....',
             'queue'     => $queue[0]['total'],
             'pending'   => $pending[0]['total'],
             'workers'   => $workers

@@ -40,7 +40,7 @@ class IndexController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         //$domains    = $em->getRepository('App:Domains')->tableSize();
-        $ext        = $em->getRepository('App:ExternalDomain')->tableSize();
+        //$ext        = $em->getRepository('App:ExternalDomain')->tableSize();
         //$queue      = $em->getRepository('App:Queue')->tableSize();
         //$pending    = $em->getRepository('App:Pending')->tableSize();
         $workers    = $em->getRepository('App:Process')->tableSize();
@@ -48,7 +48,7 @@ class IndexController extends AbstractController
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',
             'data' => [
-                'domains'   => $ext[0]['total'],
+                'domains'   => 'loading....',
                 //'queue'     => $queue[0]['total'],
                 //'pending'   => $pending[0]['total'],
                 'workers'   => $workers[0]['total'],
