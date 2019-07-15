@@ -21,9 +21,9 @@
         let app = new Vue({
             el: '#app',
             data: {
-                domains: 0,
-                queue: 0,
-                pending: 0,
+                domains: '',
+                queue: '',
+                pending: '',
                 workers: []
             },
             mounted: function(){
@@ -59,21 +59,25 @@
                     });
                 },
                 start: function (event) {
+                    /*
                     console.log('--> Start');
                     let _this = this;
                     event.preventDefault();
                     this.$http.get('/domain/spider/start', {responseType: 'json'}).then(function(response) {
                         console.log(response);
                     });
+                    */
 
                 },
                 stop: function (event) {
+                    /*
                     console.log('--> Stop');
                     let _this = this;
                     event.preventDefault();
                     this.$http.get('/domain/spider/stop', {responseType: 'json'}).then(function(response) {
                         console.log(response);
                     });
+                    */
                 },
                 refresh: function (event) {
                     console.log('--> Refresh');
@@ -104,9 +108,9 @@
             <main role="main" class="inner " v-cloak>
                 <div class="clearfix">
                     <h1 class="float-md-left cover-heading">Domain Spider <sup>Beta</sup></h1>
-                    <a class="start_button float-md-right btn btn-success" v-on:click="start">Start Crawler</a>
+                    {# <a class="start_button float-md-right btn btn-success" v-on:click="start">Start Crawler</a> #}
                 </div>
-                <p class="lead mt-4">Domains: {{"{{ domains }}"}} | Crawlers: {{"{{ getWorkerSize() }}"}}</p>
+                <p class="lead mt-4">Domains: #{{"{{ domains }}"}} | Crawlers: {{"{{ getWorkerSize() }}"}}</p>
                 <div class="table-scroller" sty>
                     <table class="table table-striped table-dark">
                         <template v-for="item in workers">

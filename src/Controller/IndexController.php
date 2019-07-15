@@ -6,18 +6,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\DomainService;
 
 class IndexController extends AbstractController
 {
     public $logger;
+    private $ds;
 
     /**
      * IndexController constructor.
+     * ==
      * @param LoggerInterface $logger
+     * @param DomainService $ds
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, DomainService $ds)
     {
         $this->logger = new $logger('channel-name');
+        $this->ds = $ds;
     }
 
     /**
@@ -39,18 +44,13 @@ class IndexController extends AbstractController
     public function index()
     {
         $em = $this->getDoctrine()->getManager();
-        //$domains    = $em->getRepository('App:Domains')->tableSize();
-        //$ext        = $em->getRepository('App:ExternalDomain')->tableSize();
-        //$queue      = $em->getRepository('App:Queue')->tableSize();
-        //$pending    = $em->getRepository('App:Pending')->tableSize();
-        $workers    = $em->getRepository('App:Process')->tableSize();
+        $domains = $this->ds->getDomainCount();
+        $workers = $em->getRepository('App:Process')->tableSize();
 
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',
             'data' => [
-                'domains'   => 'loading....',
-                //'queue'     => $queue[0]['total'],
-                //'pending'   => $pending[0]['total'],
+                'domains'   => $domains,
                 'workers'   => $workers[0]['total'],
             ]
         ]);
