@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Entity\ExternalDomain;
 use App\Entity\Process;
 use App\Service\DomainWorkerPoolService;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class DomainService
 {
@@ -153,5 +154,23 @@ class DomainService
         foreach ($inits as $i) {
             $this->initiator_id = $i->getId();
         }
+    }
+
+    /**
+     * Get the domains row count - cached
+     * ==
+     * @return mixed|\Symfony\Component\Cache\CacheItem
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function getDomainCount()
+    {
+        $cache = new FilesystemAdapter();
+        $domainCount = $cache->getItem('domain.count');
+        if (!$domainCount->isHit()) {
+            $domainCount->set($this->em->getRepository('App:ExternalDomain')->tableSize());
+            $domainCount->expiresAfter(60);
+            $cache->save($domainCount);
+        }
+        return isset($domainCount->get()[0]['total']) ? $domainCount->get()[0]['total'] : 0 ;
     }
 }
