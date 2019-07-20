@@ -28,7 +28,6 @@ class DomainFactory
                 $suffix = new DomainSuffix();
                 $suffix->setSuffix($this->suffix);
                 $this->entityManager->persist($suffix);
-                $this->entityManager->flush();
                 return $suffix;
             }
         } catch (\Exception $ex) {
@@ -53,10 +52,8 @@ class DomainFactory
                 $prefix = new DomainPrefix();
                 $prefix->setPrefix($this->prefix);
                 $this->entityManager->persist($prefix);
-                $this->entityManager->flush();
                 return $prefix;
             }
-
         } catch (\Exception $ex) {
             var_dump($ex->getMessage());
             die();
@@ -78,7 +75,6 @@ class DomainFactory
             $domain = new DomainName();
             $domain->setName($this->name);
             $this->entityManager->persist($domain);
-            $this->entityManager->flush();
             return $domain;
         } catch (\Exception $ex) {
             var_dump($ex->getMessage());
@@ -121,7 +117,6 @@ class DomainFactory
                 $domain->addSuffix($suffix);
             }
             $this->entityManager->persist($domain);
-            $this->entityManager->flush();
         } catch (\Exception $ex) {
             var_dump($ex->getMessage());
             die();
