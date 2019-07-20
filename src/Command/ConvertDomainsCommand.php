@@ -57,7 +57,7 @@ class ConvertDomainsCommand extends Command
 
     public function runner()
     {
-        $all_domains = $this->entityManager->getRepository('App:Domains')->findBy([], ['id' => 'desc'], 1000);
+        $all_domains = $this->entityManager->getRepository('App:Domains')->findBy([], ['id' => 'desc'], 100);
 
         if (!empty($all_domains)) {
             $factory = new DomainFactory($this->entityManager);
