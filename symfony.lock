@@ -5,6 +5,15 @@
     "cron/cron-bundle": {
         "version": "2.1.0"
     },
+    "layershifter/tld-database": {
+        "version": "1.0.68"
+    },
+    "layershifter/tld-extract": {
+        "version": "2.0.1"
+    },
+    "layershifter/tld-support": {
+        "version": "1.1.1"
+    },
     "monolog/monolog": {
         "version": "1.24.0"
     },
@@ -36,6 +45,12 @@
             "config/packages/prod/monolog.yaml",
             "config/packages/test/monolog.yaml"
         ]
+    },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.11.0"
     },
     "symfony/proxy-manager-bridge": {
         "version": "v4.2.4"

@@ -28,6 +28,16 @@ class DomainsRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findLastInserted()
+    {
+        return $this
+            ->createQueryBuilder("q")
+            ->orderBy("q.id", "DESC")
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Domains[] Returns an array of Domains objects
     //  */

@@ -168,7 +168,7 @@ class DomainService
         $domainCount = $cache->getItem('domain.count');
         if (!$domainCount->isHit()) {
             $domainCount->set($this->em->getRepository('App:ExternalDomain')->tableSize());
-            $domainCount->expiresAfter(60);
+            $domainCount->expiresAfter(3600);
             $cache->save($domainCount);
         }
         return isset($domainCount->get()[0]['total']) ? $domainCount->get()[0]['total'] : 0 ;
