@@ -52,27 +52,27 @@ class ConvertDomainsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $all_domains = $this->entityManager->getRepository('App:Domains')->findAll();
+        $this->runner();
+    }
 
+    public function runner()
+    {
         $all_domains = $this->entityManager->getRepository('App:Domains')->findBy([], ['id' => 'desc'], 1000);
 
-        /*
-        $single = $this->entityManager->getRepository('App:Domains')->findLastInserted();
-        $all_domains = [];
-        $all_domains[] = $single;
-        */
+        if (!empty($all_domains)) {
+            $factory = new DomainFactory($this->entityManager);
+            foreach ($all_domains as $domain) {
+                $adapter = new DomainsEntityAdapter($domain);
+                $this->d($adapter, false);
+                $factory->create($adapter->getMaterials());
+                $this->entityManager->remove($domain);
+            }
 
-        $factory = new DomainFactory($this->entityManager);
-
-        foreach ($all_domains as $domain) {
-            $adapter = new DomainsEntityAdapter($domain);
-            $this->d($adapter, false);
-            $factory->create($adapter->getMaterials());
-
-            $this->entityManager->remove($domain);
             $this->entityManager->flush();
-        }
+            $this->runner();
 
-        exit();
+        } else {
+            exit();
+        }
     }
 }
