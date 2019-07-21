@@ -1,10 +1,5 @@
 #!/usr/bin/env groovy
 
-def remote = [:]
-remote.name = "node-1"
-remote.host = "206.189.27.158"
-remote.allowAnyHosts = true
-
 pipeline {
 
     agent {
@@ -43,10 +38,14 @@ pipeline {
 
                 script{
 
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ffb49675-207f-431a-8112-114d573c905c', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'root')]) {
-                        remote.user = userName
-                        remote.identityFile = identity
+                    def remote = [:]
+                    remote.name = "node-1"
+                    remote.host = "206.189.27.158"
+                    remote.allowAnyHosts = true
 
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ffb49675-207f-431a-8112-114d573c905c', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'root')]) {
+                        remote.user = "root"
+                        remote.identityFile = "/root/.ssh/id_rsa"
 
                         stage("SSH Steps Rocks!") {
                             writeFile file: 'abc.sh', text: 'ls'
