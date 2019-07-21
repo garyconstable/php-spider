@@ -32,9 +32,9 @@ pipeline {
             echo '--> Run Success'
             dir("/var/www/spider") {
 
-                echo '--> Before sudo'
-                sh 'sudo su'
-                echo '--> After sudo'
+                // echo '--> Before sudo'
+                // sh 'sudo su'
+                // echo '--> After sudo'
 
                 echo '--> Before deploy'
                 sh './deploy.sh'
