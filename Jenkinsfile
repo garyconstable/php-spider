@@ -31,14 +31,12 @@ pipeline {
         success {
 
             echo '--> Run Success'
-            sh './var/www/spider/deploy.sh'
 
-            //dir("") {
-            //
-            //    echo '--> Before deploy'
-            //
-            //    echo '--> After Deploy'
-            // }
+            sh '''#!/bin/bash
+
+                echo "Hello from bash"
+                echo "Who I'm $SHELL"
+            '''
         }
     }
 }
