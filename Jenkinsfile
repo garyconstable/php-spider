@@ -43,8 +43,7 @@ pipeline {
                     remote.identityFile = identity
 
                     stage("SSH Steps Rocks!") {
-                        sshCommand remote: remote, command: 'whoami'
-                        sshCommand remote: remote, command: 'cd /var/www/spider'
+                        sshCommand remote: remote, command: 'cd /var/www/spider; ls -la'
                         sshCommand remote: remote, command: 'ls -la'
                     }
                 }
