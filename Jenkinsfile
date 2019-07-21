@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 
-
+def remote = [:]
+remote.name = "node-1"
+remote.host = "206.189.27.158"
+remote.allowAnyHosts = true
 
 pipeline {
 
@@ -34,11 +37,6 @@ pipeline {
 
             echo '--> Run Success'
             steps {
-
-                def remote = [:]
-                remote.name = "node-1"
-                remote.host = "206.189.27.158"
-                remote.allowAnyHosts = true
 
                 node{
 
