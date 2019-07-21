@@ -72,10 +72,12 @@ class DomainFactory
             if ($result = $this->entityManager->getRepository('App:DomainName')->findOneBy(['name' => $this->name])) {
                 return $result;
             }
-            $domain = new DomainName();
-            $domain->setName($this->name);
-            $this->entityManager->persist($domain);
-            return $domain;
+            if ($this->name) {
+                $domain = new DomainName();
+                $domain->setName($this->name);
+                $this->entityManager->persist($domain);
+                return $domain;
+            }
         } catch (\Exception $ex) {
             var_dump($ex->getMessage());
             die();
