@@ -112,13 +112,15 @@ class DomainFactory
 
         try {
             $domain = $this->getDomain();
-            if ($prefix = $this->getPrefix()) {
-                $domain->addPrefix($prefix);
+            if ($domain) {
+                if ($prefix = $this->getPrefix()) {
+                    $domain->addPrefix($prefix);
+                }
+                if ($suffix = $this->getSuffix()) {
+                    $domain->addSuffix($suffix);
+                }
+                $this->entityManager->persist($domain);
             }
-            if ($suffix = $this->getSuffix()) {
-                $domain->addSuffix($suffix);
-            }
-            $this->entityManager->persist($domain);
         } catch (\Exception $ex) {
             var_dump($ex->getMessage());
             die();
