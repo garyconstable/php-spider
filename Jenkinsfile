@@ -32,7 +32,7 @@ pipeline {
 
             echo '--> Run Success'
 
-            sh '''#!/bin/bash
+            sh '''
                 u="$USER"
                 echo "User name: $u"
             '''
