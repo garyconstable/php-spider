@@ -167,10 +167,23 @@ class DomainService
         $cache = new FilesystemAdapter();
         $domainCount = $cache->getItem('domain.count');
         if (!$domainCount->isHit()) {
-            $domainCount->set($this->em->getRepository('App:ExternalDomain')->tableSize());
-            $domainCount->expiresAfter(93600);
-            $cache->save($domainCount);
+            $this->setDomainCount();
+            $domainCount = $cache->getItem('domain.count');
         }
-        return isset($domainCount->get()[0]['total']) ? $domainCount->get()[0]['total'] : 0 ;
+        return isset($domainCount->get()[0]['total']) ? $domainCount->get()[0]['total'] : 0;
+    }
+
+    /**
+     * Set the domain count
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function setDomainCount()
+    {
+        $cache = new FilesystemAdapter();
+        $domainCount = $cache->getItem('domain.count');
+        $domainCount->set($this->em->getRepository('App:ExternalDomain')->tableSize());
+        $domainCount->expiresAfter(93600);
+        $cache->save($domainCount);
     }
 }
