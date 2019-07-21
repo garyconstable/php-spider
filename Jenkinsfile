@@ -33,9 +33,8 @@ pipeline {
             echo '--> Run Success'
 
             sh '''#!/bin/bash
-
-                echo "Hello from bash"
-                echo "Who I'm $SHELL"
+                user=$(whoami)
+                echo user
             '''
         }
     }
