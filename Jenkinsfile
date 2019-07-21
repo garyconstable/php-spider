@@ -39,7 +39,7 @@ pipeline {
 
 
 
-            steps{
+            node{
 
                 script{
 
@@ -57,7 +57,7 @@ pipeline {
                             sshRemove remote: remote, path: 'abc.sh'
                         }
                     }
-                    
+
                 }
             }
         }
