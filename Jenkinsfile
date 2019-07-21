@@ -33,7 +33,6 @@ pipeline {
             echo '--> Run Success'
 
             script{
-
                 def remote = [:]
                 remote.name = "node-1"
                 remote.host = "206.189.27.158"
@@ -44,11 +43,12 @@ pipeline {
                     remote.identityFile = identity
 
                     stage("SSH Steps Rocks!") {
-                        sshCommand remote: remote, sudo: true, command: 'cd /var/www/spider'
-                        sshCommand remote: remote, sudo: true, command: 'ls -la'
+                        sshCommand remote: remote, command: 'sudo su'
+                        sshCommand remote: remote, command: 'cd /var/www/spider'
+                        sshCommand remote: remote, command: 'ls -la'
+                        sshCommand remote: remote, command: './deploy.sh'
                     }
                 }
-
             }
         }
     }
