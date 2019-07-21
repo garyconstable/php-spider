@@ -26,6 +26,7 @@ pipeline {
                 sh 'pwd'
                 dir("/var/www/spider") {
                     sh 'pwd'
+                    sh 'sudo su'
                     sh 'git pull'
                 }
             }
