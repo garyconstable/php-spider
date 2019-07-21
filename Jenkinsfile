@@ -33,8 +33,7 @@ pipeline {
             echo '--> Run Success'
 
             sh '''#!/bin/bash
-                user=$(whoami)
-                echo user
+                echo "$USER"
             '''
         }
     }
