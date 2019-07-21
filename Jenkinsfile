@@ -30,7 +30,7 @@ pipeline {
     post {
         success {
 
-            echo '--> Deploy to Server'
+            echo '--> Deploy to Server.'
 
             script{
                 def remote = [:]
