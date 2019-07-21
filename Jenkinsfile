@@ -23,13 +23,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo '--> Deploying'
-                // sh 'pwd'
-                // dir("/var/www/spider") {
-                //    sh 'pwd'
-                //    sh 'sudo su'
-                //    sh 'git pull'
-                //}
             }
+        }
+    }
+
+    post {
+        success {
+            echo '--> Run Success'
         }
     }
 }
