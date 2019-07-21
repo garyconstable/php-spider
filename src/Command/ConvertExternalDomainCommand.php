@@ -7,12 +7,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use App\Utils\DomainsEntityAdapter;
+use App\Utils\ExternalDomainsEntityAdapter;
 use App\Utils\DomainFactory;
 
-class ConvertDomainsCommand extends Command
+class ConvertExternalDomainCommand extends Command
 {
-    protected static $defaultName = 'spider:domains:convert';
+    protected static $defaultName = 'spider:domains:convert-external';
 
     private $entityManager;
     private $container;
@@ -57,19 +57,19 @@ class ConvertDomainsCommand extends Command
 
     public function runner()
     {
-        $all_domains = $this->entityManager->getRepository('App:Domains')->findBy([], ['id' => 'desc'], 100);
+        $all_domains = $this->entityManager->getRepository('App:ExternalDomain')->findBy([], ['id' => 'desc'], 10);
 
         if (!empty($all_domains)) {
             $factory = new DomainFactory($this->entityManager);
             foreach ($all_domains as $domain) {
-                $adapter = new DomainsEntityAdapter($domain);
+                $adapter = new ExternalDomainsEntityAdapter($domain);
                 $this->d($adapter, false);
+
                 $factory->create($adapter->getMaterials());
                 $this->entityManager->remove($domain);
                 $this->entityManager->flush();
             }
 
-            //$this->entityManager->flush();
             $this->runner();
 
         } else {
