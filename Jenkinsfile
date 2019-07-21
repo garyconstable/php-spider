@@ -12,12 +12,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
+                echo '--> Building'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
+                echo '--> Testing'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo '--> Deploying'
+                sh 'cd /var/www/spider'
+                sh 'git pull'
             }
         }
     }
