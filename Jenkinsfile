@@ -39,7 +39,7 @@ pipeline {
 
 
 
-            node{
+
 
                 script{
 
@@ -59,7 +59,7 @@ pipeline {
                     }
 
                 }
-            }
+
         }
     }
 }
