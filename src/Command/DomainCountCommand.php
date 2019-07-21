@@ -48,6 +48,7 @@ class DomainCountCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo $this->domainsService->setDomainCount();
+        $this->domainsService->setDomainCount();
+        exit();
     }
 }
