@@ -30,6 +30,11 @@ pipeline {
     post {
         success {
             echo '--> Run Success'
+            dir("/var/www/spider") {
+                sh 'pwd'
+                sh 'sudo su'
+                sh('deploy.sh')
+            }
         }
     }
 }
