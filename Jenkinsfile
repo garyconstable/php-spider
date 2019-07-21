@@ -23,8 +23,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo '--> Deploying'
-                sh 'cd /var/www/spider'
-                sh 'git pull'
+                sh "pwd"
+                dir("/var/www/spider") {
+                    sh "pwd"
+                    sh 'git pull'
+                }
             }
         }
     }
