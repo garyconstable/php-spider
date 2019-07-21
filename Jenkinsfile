@@ -29,17 +29,16 @@ pipeline {
 
     post {
         success {
+
             echo '--> Run Success'
-            dir("/var/www/spider") {
+            sh './var/www/spider/deploy.sh'
 
-                // echo '--> Before sudo'
-                // sh 'sudo su'
-                // echo '--> After sudo'
-
-                echo '--> Before deploy'
-                sh './deploy.sh'
-                echo '--> After Deploy'
-            }
+            //dir("") {
+            //
+            //    echo '--> Before deploy'
+            //
+            //    echo '--> After Deploy'
+            // }
         }
     }
 }
