@@ -41,7 +41,7 @@ pipeline {
 
                 withCredentials([sshUserPrivateKey(credentialsId: 'ffb49675-207f-431a-8112-114d573c905c', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'root')]) {
                     remote.user = "root"
-                    remote.identityFile = "~/.ssh/id_rsa"
+                    // remote.identityFile = "~/.ssh/id_rsa"
 
                     stage("SSH Steps Rocks!") {
                         writeFile file: 'abc.sh', text: 'ls'
