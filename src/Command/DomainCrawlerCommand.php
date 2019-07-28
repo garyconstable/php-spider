@@ -66,20 +66,8 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
-        $l = new Log();
-        $l->setMessage('==> before kill all php');
-        $l->setDateAdd(new \DateTime());
-        $this->entityManager->persist($l);
-        $this->entityManager->flush();
-
         $command = "killall php";
         exec($command, $output);
-
-        $l = new Log();
-        $l->setMessage('==> after kill all php');
-        $l->setDateAdd(new \DateTime());
-        $this->entityManager->persist($l);
-        $this->entityManager->flush();
 
         $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator' ]);
         foreach ($processes as $process) {
@@ -89,12 +77,6 @@ class DomainCrawlerCommand extends Command
             $this->entityManager->remove($process);
             $this->entityManager->flush();
         }
-
-        $l = new Log();
-        $l->setMessage('==> after kill inititator');
-        $l->setDateAdd(new \DateTime());
-        $this->entityManager->persist($l);
-        $this->entityManager->flush();
     }
 
     /**
