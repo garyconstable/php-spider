@@ -63,8 +63,6 @@ class ConvertExternalDomainCommand extends Command
             $factory = new DomainFactory($this->entityManager);
             foreach ($all_domains as $domain) {
                 $adapter = new ExternalDomainsEntityAdapter($domain);
-                $this->d($adapter, false);
-
                 $factory->create($adapter->getMaterials());
                 $this->entityManager->remove($domain);
                 $this->entityManager->flush();
@@ -77,7 +75,6 @@ class ConvertExternalDomainCommand extends Command
         }
     }
 }
-
 
 
 /*
