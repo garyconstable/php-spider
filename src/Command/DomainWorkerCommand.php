@@ -8,8 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Service\UrlService;
-use App\Entity\ExternalDomain;
 use App\Entity\Email;
+use App\Utils\DomainNameAdapter;
 
 class DomainWorkerCommand extends Command
 {
@@ -223,11 +223,9 @@ class DomainWorkerCommand extends Command
     {
         if (!\is_null($domain_name) && $domain_name) {
             try {
-                $domain = new ExternalDomain();
-                $domain->setUrl($domain_name);
-                $domain->setVisited(false);
-                $domain->setDateAdd(new \DateTime());
-                $this->em->persist($domain);
+                $adapter = new DomainNameAdapter($domain_name);
+                $factory = new DomainFactory($this->em);
+                $factory->create($adapter->getMaterials());
                 $this->em->flush();
             } catch (UniqueConstraintViolationException $e) {
                 $this->em = $this->container->get('doctrine')->resetManager();
@@ -248,7 +246,7 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     *
+     * Save email.
      * ==
      */
     public function saveEmails()
