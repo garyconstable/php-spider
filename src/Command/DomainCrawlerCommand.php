@@ -105,9 +105,11 @@ class DomainCrawlerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-       $this->cleanupProcess();
-       $this->endInitiators();
-       $this->execInitiator();
+        /*
+        $this->cleanupProcess();
+        $this->endInitiators();
+        $this->execInitiator();
+        */
     }
 
     /**
