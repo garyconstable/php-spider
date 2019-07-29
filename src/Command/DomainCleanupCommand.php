@@ -66,8 +66,8 @@ class DomainCleanupCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->cleanupProcess();
-        $this->execInitiator();
+        //$this->cleanupProcess();
+        //$this->execInitiator();
     }
 
     /**

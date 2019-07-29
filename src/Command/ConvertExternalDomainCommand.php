@@ -78,19 +78,44 @@ class ConvertExternalDomainCommand extends Command
 
 
 /*
-
 select
 dp.prefix,
 dn.name,
 ds.suffix
 from
-
 domain_name dn left join domain_name_domain_prefix dnp on dn.id = dnp.domain_name_id
 left join domain_prefix dp on dnp.`domain_prefix_id` = dp.id
-
 left join domain_name_domain_suffix dns on dn.id = dns.`domain_name_id`
 left join domain_suffix ds on dns.`domain_suffix_id` = ds.id
-
 order by dn.name
+
+====
+
+select dom.domain from
+(select
+CONCAT(dp.prefix,'.',dn.name,'.',ds.suffix) as domain
+from
+domain_name dn left join domain_name_domain_prefix dnp on dn.id = dnp.domain_name_id
+left join domain_prefix dp on dnp.`domain_prefix_id` = dp.id
+left join domain_name_domain_suffix dns on dn.id = dns.`domain_name_id`
+left join domain_suffix ds on dns.`domain_suffix_id` = ds.id
+order by dn.name) as dom
+group by dom.domain
+order by dom.domain
+
+===
+
+insert into domains (domain)
+select abc.domain from (select dom.domain from
+(select
+CONCAT(dp.prefix,'.',dn.name,'.',ds.suffix) as domain
+from
+domain_name dn left join domain_name_domain_prefix dnp on dn.id = dnp.domain_name_id
+left join domain_prefix dp on dnp.`domain_prefix_id` = dp.id
+left join domain_name_domain_suffix dns on dn.id = dns.`domain_name_id`
+left join domain_suffix ds on dns.`domain_suffix_id` = ds.id
+order by dn.name) as dom
+group by dom.domain
+order by dom.domain) as abc where domain is not null
 
 */
