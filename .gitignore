@@ -26,3 +26,6 @@ data/*
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+sql.txt
+fix.php
