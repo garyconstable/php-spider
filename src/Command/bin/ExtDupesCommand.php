@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use App\Entity\Log;
 use Symfony\Component\Console\Command\Command;

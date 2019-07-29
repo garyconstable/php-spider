@@ -21,3 +21,8 @@ data/processed/*.txt
 ###< squizlabs/php_codesniffer ###
 
 data/*
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
