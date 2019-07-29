@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,8 +66,8 @@ class DomainCleanupCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->cleanupProcess();
-        $this->execInitiator();
+        //$this->cleanupProcess();
+        //$this->execInitiator();
     }
 
     /**

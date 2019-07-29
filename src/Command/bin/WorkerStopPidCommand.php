@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
 
-class WorkerStopCommand extends Command
+class WorkerStopPidCommand extends Command
 {
-    protected static $defaultName = 'spider:worker:stop';
+    protected static $defaultName = 'spider:worker:stop_pid';
 
     private $em;
 
@@ -34,6 +35,7 @@ class WorkerStopCommand extends Command
      */
     protected function configure()
     {
+        $this->addArgument('pid', InputArgument::REQUIRED, 'PID');
     }
 
     /**
@@ -59,48 +61,22 @@ class WorkerStopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->stopProcesses();
+        $pid = $input->getArgument('pid');
+        $this->stopProcesses($pid);
     }
 
     /**
-     * Save the worker PID to the table
      * ==
      * @param int $pid
-     * @throws \Exception
      */
-    public function saveWorker($pid = 0)
+    protected function stopProcesses($pid = 0)
     {
-        $proc = new \App\Entity\Process();
-        $proc->setPid($pid);
-        $proc->setDateAdd(new \DateTime());
-        $this->em->persist($proc);
-        $this->em->flush();
-    }
-
-    /**
-     * ==
-     * @return bool
-     */
-    protected function stopProcesses()
-    {
-        $idx    = 0;
-        $limit  = 1;
-        $processes = $this->em->getRepository('App:Process')->findAll();
-        if (empty($processes)) {
-            return false;
-        }
-        foreach ($processes as $process) {
-            if ($idx == $limit) {
-                continue;
-            }
-            $pid = $process->getPid();
-            $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
-            exec($command, $output);
-            $proc = $this->em->getRepository('App:Process')->find($process->getID());
-            $this->em->remove($proc);
+        $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
+        exec($command, $output);
+        $proc = $this->em->getRepository('App:Process')->findBy(['pid' => $pid ]);
+        foreach ($proc as $p) {
+            $this->em->remove($p);
             $this->em->flush();
-            $idx++;
         }
-        return true;
     }
 }

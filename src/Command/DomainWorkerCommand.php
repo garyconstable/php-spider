@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use App\Service\UrlService;
 use App\Entity\Email;
-use App\Utils\DomainNameAdapter;
+use App\Entity\Domains;
 
 class DomainWorkerCommand extends Command
 {
@@ -19,7 +19,7 @@ class DomainWorkerCommand extends Command
 
     private $container;
 
-    private $emails         = [];
+    private $emails = [];
 
     private $internal_links = [];
 
@@ -49,7 +49,7 @@ class DomainWorkerCommand extends Command
      */
     public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, true).'</pre>';
+        echo '<pre>' . print_r($data, true) . '</pre>';
         if ($die) {
             die();
         }
@@ -110,7 +110,7 @@ class DomainWorkerCommand extends Command
     {
         $url = $this->getNextInternalLink();
         $this->max_pages_crawled -= 1;
-        if (false !== $url &&  $this->max_pages_crawled > 0) {
+        if (false !== $url && $this->max_pages_crawled > 0) {
             $this->scrapePage($url);
             $this->linkRunner();
         }
@@ -128,12 +128,14 @@ class DomainWorkerCommand extends Command
             $header_str = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 
             (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17 ";
             $ctx = stream_context_create(array(
-                    'http' => array(
-                        'timeout' => 1,
-                        'method' => "GET",
-                        'header' => "Accept-language: en\r\n" .
-                            "Cookie: foo=bar\r\n" .
-                            "User-Agent: " . $header_str . "\r\n")));
+                'http' => array(
+                    'timeout' => 1,
+                    'method' => "GET",
+                    'header' => "Accept-language: en\r\n" .
+                        "Cookie: foo=bar\r\n" .
+                        "User-Agent: " . $header_str . "\r\n"
+                )
+            ));
             return file_get_contents($url, false, $ctx);
         } catch (\Exception $ex) {
             return false;
@@ -157,8 +159,8 @@ class DomainWorkerCommand extends Command
         foreach ($links as $link) {
             if (empty($arr)) {
                 $arr[] = [
-                    'link'      => $link,
-                    'visited'   => false
+                    'link' => $link,
+                    'visited' => false
                 ];
             } else {
                 $found = false;
@@ -169,8 +171,8 @@ class DomainWorkerCommand extends Command
                 }
                 if (!$found) {
                     $arr[] = [
-                        'link'      => $link,
-                        'visited'   => false
+                        'link' => $link,
+                        'visited' => false
                     ];
                 }
             }
@@ -191,7 +193,7 @@ class DomainWorkerCommand extends Command
 
         $ext_links = UrlService::getExternalLinks($html, $this->current_domain);
 
-        $emails     = UrlService::getEmails($html);
+        $emails = UrlService::getEmails($html);
 
         $this->addLink($int_links, true);
 
@@ -223,9 +225,9 @@ class DomainWorkerCommand extends Command
     {
         if (!\is_null($domain_name) && $domain_name) {
             try {
-                $adapter = new DomainNameAdapter($domain_name);
-                $factory = new DomainFactory($this->em);
-                $factory->create($adapter->getMaterials());
+                $domain = new Domains();
+                $domain->setDomain($domain_name);
+                $this->em->persist($domain);
                 $this->em->flush();
             } catch (UniqueConstraintViolationException $e) {
                 $this->em = $this->container->get('doctrine')->resetManager();
@@ -265,4 +267,3 @@ class DomainWorkerCommand extends Command
         }
     }
 }
-
