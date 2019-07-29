@@ -11,8 +11,6 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use App\Service\DomainService;
 
-
-
 class DomainInitiatorCommand extends Command
 {
     protected static $defaultName = 'spider:domain:start';
@@ -56,7 +54,7 @@ class DomainInitiatorCommand extends Command
         $param = 0;
         $initiator_id = $input->getArgument('initiator_process_id');
         if ($initiator_id) {
-            $param =  $initiator_id;
+            $param = $initiator_id;
         }
         $this->domainsService->startDomainCrawler($param);
     }
