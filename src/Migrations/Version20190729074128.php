@@ -22,7 +22,7 @@ final class Version20190729074128 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX email_2 ON email');
+        // $this->addSql('DROP INDEX email_2 ON email');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8C7BBF9DA7A91E0B ON domains (domain)');
     }
 
@@ -32,6 +32,6 @@ final class Version20190729074128 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP INDEX UNIQ_8C7BBF9DA7A91E0B ON domains');
-        $this->addSql('CREATE UNIQUE INDEX email_2 ON email (email)');
+        //$this->addSql('CREATE UNIQUE INDEX email_2 ON email (email)');
     }
 }
