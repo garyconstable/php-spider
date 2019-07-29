@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Command\Bin;
+namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-use App\Utils\ExternalDomainsEntityAdapter;
-use App\Utils\DomainFactory;
+use App\Entity\Domains;
 
 class ConvertExternalDomainCommand extends Command
 {
@@ -60,16 +58,17 @@ class ConvertExternalDomainCommand extends Command
         $all_domains = $this->entityManager->getRepository('App:ExternalDomain')->findBy([], ['id' => 'desc'], 10);
 
         if (!empty($all_domains)) {
-            $factory = new DomainFactory($this->entityManager);
             foreach ($all_domains as $domain) {
-                $adapter = new ExternalDomainsEntityAdapter($domain);
-                $factory->create($adapter->getMaterials());
-                $this->entityManager->remove($domain);
-                $this->entityManager->flush();
+                try {
+                    $url = $domain->getUrl();
+                    $domain = new Domains();
+                    $domain->setDomain($url);
+                    $this->em->persist($domain);
+                    $this->em->flush();
+                } catch (\Exception $ex) {
+                }
             }
-
             $this->runner();
-
         } else {
             exit();
         }
