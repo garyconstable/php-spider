@@ -86,9 +86,9 @@ class DomainCrawlerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-//        $this->cleanupProcess();
-//        $this->endInitiators();
-//        $this->execInitiator();
+        $this->cleanupProcess();
+        $this->endInitiators();
+        $this->execInitiator();
     }
 
     /**
@@ -140,3 +140,18 @@ class DomainCrawlerCommand extends Command
         $this->entityManager->flush();
     }
 }
+
+
+/*
+
+delete from domains where domain = 'https://www.toshiba-croatia.com';
+
+SELECT domain FROM domains GROUP BY domain HAVING COUNT(*) > 1
+
+delete from domains where domain in (
+	SELECT * FROM (
+		SELECT domain FROM domains GROUP BY domain HAVING COUNT(*) > 1
+	) as p
+)
+
+ */
