@@ -18,6 +18,8 @@ class DomainCrawlerCommand extends Command
     private $container;
     private $logger;
 
+    private $enabled = false;
+
     /**
      * DomainCrawlerCommand constructor.
      *
@@ -90,7 +92,9 @@ class DomainCrawlerCommand extends Command
     {
         $this->cleanupProcess();
         $this->endInitiators();
-        $this->execInitiator();
+        if ($this->enabled) {
+            $this->execInitiator();
+        }
     }
 
     /**
