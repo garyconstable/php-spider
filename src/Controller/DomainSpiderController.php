@@ -44,7 +44,6 @@ class DomainSpiderController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $domains    = $this->ds->getDomainCount();
         $queue      = $em->getRepository('App:Queue')->tableSize();
-        $pending    = $em->getRepository('App:Pending')->tableSize();
         $tmp        = $em->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker']);
         $workers    = [];
 
@@ -61,7 +60,6 @@ class DomainSpiderController extends AbstractController
         return new JsonResponse(array(
             'domains'   => $domains,
             'queue'     => $queue[0]['total'],
-            'pending'   => $pending[0]['total'],
             'workers'   => $workers
         ));
     }
