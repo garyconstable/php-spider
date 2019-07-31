@@ -19,8 +19,8 @@ class DomainCrawlerCommand extends Command
     private $logger;
 
     /**
-     * ==
      * DomainCrawlerCommand constructor.
+     *
      * @param ContainerInterface $container
      * @param \App\Service\DomainService $ds
      * @param LoggerInterface $logger
@@ -39,11 +39,11 @@ class DomainCrawlerCommand extends Command
 
     /**
      * Remove any worker process that has been running for over 15 minutes.
-     * ==
+     *
      */
     public function cleanupProcess()
     {
-        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker' ]);
+        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker']);
 
         foreach ($processes as $process) {
             $date = $process->getDateAdd();
@@ -51,7 +51,7 @@ class DomainCrawlerCommand extends Command
 
             if ($diff->h > 0 || $diff->i > 15) {
                 $pid = $process->getPid();
-                $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
+                $command = "kill " . $pid . " > /dev/null 2>&1 & echo $!;";
                 exec($command, $output);
                 $this->entityManager->remove($process);
                 $this->entityManager->flush();
@@ -61,17 +61,17 @@ class DomainCrawlerCommand extends Command
 
     /**
      * Kill the initiator processes
-     * ==
+     *
      */
     public function endInitiators()
     {
         $command = "killall php";
         exec($command, $output);
 
-        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator' ]);
+        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator']);
         foreach ($processes as $process) {
             $pid = $process->getPid();
-            $command = "kill " . $pid ." > /dev/null 2>&1 & echo $!;";
+            $command = "kill " . $pid . " > /dev/null 2>&1 & echo $!;";
             exec($command, $output);
             $this->entityManager->remove($process);
             $this->entityManager->flush();
@@ -79,6 +79,8 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
+     * Exe.
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
@@ -92,14 +94,14 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
+     * Debug.
      *
-     * ==
      * @param array $data
      * @param bool $die
      */
     public static function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, true).'</pre>';
+        echo '<pre>' . print_r($data, true) . '</pre>';
         if ($die) {
             die();
         }
@@ -107,7 +109,7 @@ class DomainCrawlerCommand extends Command
 
     /**
      * Start a new parent process
-     * ==
+     *
      * @param string $worker_type
      * @return Process
      * @throws \Exception
@@ -123,12 +125,13 @@ class DomainCrawlerCommand extends Command
     }
 
     /**
-     * ==
+     * Exec.
+     *
      * @throws \Exception
      */
     public function execInitiator()
     {
-        $dir =  rtrim(dirname(__DIR__, 2), '/') ;
+        $dir = rtrim(dirname(__DIR__, 2), '/');
         $command = "php " . $dir . "/bin/console spider:domain:start > /dev/null 2>&1 & echo $!;";
         $pid = exec($command, $output);
 

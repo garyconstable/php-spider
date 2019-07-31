@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,10 +16,9 @@ class WorkerCommand extends Command
     private $max_workers = 5;
     private $worker_type = 'spider_worker';
 
-
     /**
      * QueueWorkerCommand constructor.
-     * ==
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -30,29 +29,29 @@ class WorkerCommand extends Command
     }
 
     /**
-     * Add settings here..
-     * ==
+     * Add settings here.
      */
     protected function configure()
     {
     }
 
     /**
-     * Debugger
-     * ==
+     * Debugger.
+     *
      * @param array $data
      * @param bool $die
      */
     public function d($data = [], $die = true)
     {
-        echo '<pre>'.print_r($data, true).'</pre>';
+        echo '<pre>' . print_r($data, true) . '</pre>';
         if ($die) {
             die();
         }
     }
 
     /**
-     * ==
+     * Exec.
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
@@ -68,7 +67,8 @@ class WorkerCommand extends Command
     }
 
     /**
-     * ==
+     * Save.
+     *
      * @param int $pid
      * @return bool
      * @throws \Exception
@@ -86,7 +86,7 @@ class WorkerCommand extends Command
 
     /**
      * Is the PID running?
-     * ==
+     *
      * @param $pid
      * @return bool
      */
@@ -103,8 +103,8 @@ class WorkerCommand extends Command
     }
 
     /**
-     * Get number of running PID
-     * ==
+     * Get number of running PID.
+     *
      * @return int
      */
     protected function getCurrentNumberOfWorkers()
@@ -128,13 +128,13 @@ class WorkerCommand extends Command
     }
 
     /**
-     * Run the queue worker
-     * ==
+     * Run the queue worker.
+     *
      * @throws \Exception
      */
     public function execQueueWorker()
     {
-        $dir =  rtrim(dirname(__DIR__, 2), '/') ;
+        $dir = rtrim(dirname(__DIR__, 2), '/');
         $command = "php " . $dir . "/bin/console spider:worker:queue > /dev/null 2>&1 & echo $!;";
         $pid = exec($command, $output);
         return $pid;

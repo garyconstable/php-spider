@@ -19,8 +19,8 @@ class DomainCountCommand extends Command
     private $logger;
 
     /**
-     * ==
      * DomainCrawlerCommand constructor.
+     *
      * @param ContainerInterface $container
      * @param \App\Service\DomainService $ds
      * @param LoggerInterface $logger
@@ -38,8 +38,8 @@ class DomainCountCommand extends Command
     }
 
     /**
-     * Get the Domain Count
-     * ==
+     * Get the Domain Count.
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|mixed|\Symfony\Component\Cache\CacheItem|null

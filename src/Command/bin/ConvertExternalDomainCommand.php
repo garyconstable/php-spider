@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use PHPUnit\Runner\Exception;
 use Symfony\Component\Console\Command\Command;

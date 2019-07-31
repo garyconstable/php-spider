@@ -20,8 +20,7 @@ class DomainInitiatorCommand extends Command
     private $container;
 
     /**
-     * Add settings here..
-     * ==
+     * Add settings here,
      */
     protected function configure()
     {
@@ -30,7 +29,7 @@ class DomainInitiatorCommand extends Command
 
     /**
      * QueueWorkerCommand constructor.
-     * ==
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container, \App\Service\DomainService $ds)
@@ -43,7 +42,7 @@ class DomainInitiatorCommand extends Command
 
     /**
      * Execute
-     * ==
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null

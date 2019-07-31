@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bin;
 
 use App\Entity\Domains;
 use App\Entity\Queue;

@@ -30,8 +30,8 @@ class DomainWorkerCommand extends Command
     private $max_pages_crawled = 50;
 
     /**
-     * ==
      * DomainWorkerCommand constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -42,8 +42,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Debugger
-     * ==
+     * Debug.
+     *
      * @param array $data
      * @param bool $die
      */
@@ -65,6 +65,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
+     * Exec.
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|void|null
@@ -86,8 +88,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Get the next Internal Link
-     * ==
+     * Get the next Internal Link.
+     *
      * @return mixed
      */
     public function getNextInternalLink()
@@ -102,8 +104,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Itterate through the links
-     * ==
+     * Itterate through the links.
+     *
      * @throws \Exception
      */
     public function linkRunner()
@@ -117,8 +119,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Get the page
-     * ==
+     * Get the page.
+     *
      * @param string $url
      * @return string
      */
@@ -143,8 +145,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Add the link to the array(s)
-     * ==
+     * Add the link to the array(s).
+     *
      * @param array $links
      * @param bool $internal
      */
@@ -180,8 +182,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Scrape the page
-     * ==
+     * Scrape the page.
+     *
      * @param string $url
      * @throws \Exception
      */
@@ -203,8 +205,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
+     * Add emails.
      *
-     * ==
      * @param $emails
      */
     public function addEmails($emails)
@@ -217,8 +219,8 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Add the Domain to the Database
-     * ==
+     * Add the Domain to the Database.
+     *
      * @param string $domain_name
      */
     public function addDomain($domain_name = "")
@@ -237,8 +239,7 @@ class DomainWorkerCommand extends Command
     }
 
     /**
-     * Save the links
-     * ==
+     * Save the links.
      */
     public function saveExternalLinks()
     {
@@ -249,7 +250,6 @@ class DomainWorkerCommand extends Command
 
     /**
      * Save email.
-     * ==
      */
     public function saveEmails()
     {
