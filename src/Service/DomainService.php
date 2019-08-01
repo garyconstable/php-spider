@@ -182,7 +182,7 @@ class DomainService
     {
         $cache = new FilesystemAdapter();
         $domainCount = $cache->getItem('domain.count');
-        $domainCount->set($this->em->getRepository('App:ExternalDomain')->tableSize());
+        $domainCount->set($this->em->getRepository('App:Domains')->tableSize());
         $domainCount->expiresAfter(93600);
         $cache->save($domainCount);
     }
