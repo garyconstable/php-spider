@@ -1,20 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ghostfog - Spider Stats{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/cover.css">
-    <style>
-        v-cloak{display: none;}
-        sup{position: relative;text-transform:uppercase;left: 0px;font-size: 10px;top: -28px;}
-        .action-button{margin-right: 15px;}
-        @media(min-width:768px){.start_button{margin-top:6px;margin-left: 15px;}}
-    </style>
-{% endblock %}
-
-{% block javascripts %}
-{% endblock %}
+{% block title %}Ghostfog - Error, OOps{% endblock %}
 
 {% block body %}
     <div id="app">
@@ -22,8 +8,7 @@
             <header class="masthead mb-auto">
                 <div class="inner">
                     <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link active" href="/">Home</a>
-                        <a class="nav-link" href="/domain/spider">Spider</a>
+                        {% include '/partials/nav.html.twig' with{active: ''} %}
                     </nav>
                 </div>
             </header>
@@ -35,11 +20,7 @@
                 <p>The server returned a "404 Not Found".</p>
                 <p>Something is broken. Please let us know what you were doing when this error occurred. We will fix it as soon as possible. Sorry for any inconvenience caused.</p>
             </main>
-            <footer class="mastfoot mt-auto">
-                <div class="inner">
-                    <p>Ghostfrog web crawler by <a href="maiilto:garyonstable80@gmail.com">@gary</a>.</p>
-                </div>
-            </footer>
+            {% include '/partials/footer.html.twig' %}
         </div>
     </div>
 {% endblock %}
