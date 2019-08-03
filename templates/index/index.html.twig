@@ -2,30 +2,12 @@
 
 {% block title %}Ghostfog - Spider Stats{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/cover.css">
-    <style>
-        v-cloak{display: none;}
-        sup{position: relative;text-transform:uppercase;left: 0px;font-size: 10px;top: -28px;}
-        .action-button{margin-right: 15px;}
-        @media(min-width:768px){.start_button{margin-top:6px;margin-left: 15px;}}
-    </style>
-{% endblock %}
-
-{% block javascripts %}
-{% endblock %}
-
 {% block body %}
     <div id="app">
         <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
             <header class="masthead mb-auto">
                 <div class="inner">
-                    <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link active" href="/">Home</a>
-                        <a class="nav-link" href="/domain/spider">Spider</a>
-                        {# <a class="nav-link" href="/link/spider">Link</a> #}
-                    </nav>
+                    {% include '/partials/nav.html.twig' with{active: 'index'} %}
                 </div>
             </header>
             <main role="main" class="inner " v-cloak>
@@ -36,11 +18,7 @@
                 {# <a class=" action-button float-md-left btn btn-success" href="/domain/spider">Domain Spider</a> #}
                 {# <a class=" action-button float-md-left btn btn-success" href="/link/spider">Link Spider</a> #}
             </main>
-            <footer class="mastfoot mt-auto">
-                <div class="inner">
-                    <p>Ghostfrog web crawler by <a href="maiilto:garyonstable80@gmail.com">@gary</a>.</p>
-                </div>
-            </footer>
+            {% include '/partials/footer.html.twig' %}
         </div>
     </div>
 {% endblock %}

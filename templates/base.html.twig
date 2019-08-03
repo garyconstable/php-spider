@@ -3,7 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+            <link rel="stylesheet" href="/css/cover.css">
+
+            <style>
+                v-cloak{display: none;}
+                sup{position: relative;text-transform:uppercase;left: 0px;font-size: 10px;top: -28px;}
+                table{margin-bottom: 0!important;}
+                .table-scroller{overflow-x: scroll;max-height: 40vh;margin-top: 30px;margin-bottom: 1rem;}
+                .action-button{margin-right: 15px;}
+                @media(min-width:768px){.start_button{margin-top:6px;margin-left: 15px;}}
+            </style>
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

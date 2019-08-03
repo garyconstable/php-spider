@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ghostfog - Domain Lists{% endblock %}
+
+{%  block javascripts %}
+    <script src="/scripts/main.bundle.js"></script>
+{% endblock %}
+
+
+{% block body %}
+    <div id="app">
+        <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+            <header class="masthead mb-auto">
+                <div class="inner">
+                    <nav class="nav nav-masthead justify-content-center">
+                        {% include '/partials/nav.html.twig' with{active: 'domains'} %}
+                    </nav>
+                </div>
+            </header>
+            <main role="main" class="inner">
+
+                <div class="clearfix">
+                    <h1 class="float-md-left cover-heading">Domain List <sup>Beta</sup></h1>
+                </div>
+                <div class="table-scroller" style="max-height: 50vh;overflow: scroll;" data-app="list">
+                </div>
+
+            </main>
+            {% include '/partials/footer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

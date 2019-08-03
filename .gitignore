@@ -30,3 +30,4 @@ data/*
 sql.txt
 fix.php
 fix2.php
+script/node_modules/

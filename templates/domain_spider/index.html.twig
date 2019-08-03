@@ -2,18 +2,6 @@
 
 {% block title %}Ghostfog - Domain Spider{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/cover.css">
-    <style>
-        v-cloak{display: none;}
-        sup{position: relative;text-transform:uppercase;left: 0px;font-size: 10px;top: -28px;}
-        table{margin-bottom: 0!important;}
-        .table-scroller{overflow-x: scroll;max-height: 40vh;margin-top: 30px;margin-bottom: 1rem;}
-        @media(min-width:768px){.start_button{margin-top:6px;margin-left: 15px;}}
-    </style>
-{% endblock %}
-
 {% block javascripts %}
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
@@ -99,9 +87,7 @@
             <header class="masthead mb-auto">
                 <div class="inner">
                     <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link" href="/">Home</a>
-                        <a class="nav-link active" href="/domain/spider">Spider</a>
-                        {# <a class="nav-link" href="/link/spider">Link</a> #}
+                        {% include '/partials/nav.html.twig' with{active: 'spider'} %}
                     </nav>
                 </div>
             </header>
@@ -111,7 +97,7 @@
                     {# <a class="start_button float-md-right btn btn-success" v-on:click="start">Start Crawler</a> #}
                 </div>
                 <p class="lead mt-4">Domains: #{{"{{ domains }}"}} | Crawlers: {{"{{ getWorkerSize() }}"}}</p>
-                <div class="table-scroller" sty>
+                <div class="table-scroller">
                     <table class="table table-striped table-dark">
                         <template v-for="item in workers">
                             <tr>
@@ -124,11 +110,7 @@
                     </table>
                 </div>
             </main>
-            <footer class="mastfoot mt-auto">
-                <div class="inner">
-                    <p>Ghostfrog web crawler by <a href="maiilto:garyonstable80@gmail.com">@gary</a>.</p>
-                </div>
-            </footer>
+            {% include '/partials/footer.html.twig' %}
         </div>
     </div>
 {% endblock %}
