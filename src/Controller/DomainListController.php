@@ -64,9 +64,15 @@ class DomainListController extends AbstractController
         $tmp = $this->dr->findBy([], ['id' => 'asc'], $limit, $offset);
 
         foreach ($tmp as $item) {
+            $url = $item->getDomain();
+
+            if (!preg_match('/http/', $url)) {
+                $url = 'http://' . $url;
+            }
+
             $results[] = [
                 'id' => $item->getId(),
-                'url' => $item->getDomain()
+                'url' =>$url
             ];
         }
 
