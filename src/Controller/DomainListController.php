@@ -51,7 +51,7 @@ class DomainListController extends AbstractController
             $page--;
         }
 
-        $limit = 1000;
+        $limit = 10;
 
         $offset = $page * $limit;
 
