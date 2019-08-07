@@ -108,3 +108,16 @@ body {
 .mastfoot {
     color: rgba(255, 255, 255, .5);
 }
+
+
+.btn-50:first-of-type{
+    width:calc(50% - 0.5em);
+    margin-right: 0.5em;
+    float: left;
+}
+
+.btn-50:last-of-type{
+    width:calc(50% - 0.5em);
+    margin-left: 0.5em;
+    float: left;
+}

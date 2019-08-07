@@ -79,8 +79,8 @@ class DomainList extends Component {
                     </table>
                 </div>
                 <div className="mt-3">
-                    <button className="w-100 btn btn-default" onClick={this.decreasePage}>Previous</button>
-                    <button className="w-100 btn btn-default mt-2" onClick={this.increasePage}>Next</button>
+                    <button className="btn btn-default btn-50" onClick={this.decreasePage}>Previous</button>
+                    <button className="btn btn-default btn-50" onClick={this.increasePage}>Next</button>
                 </div>
             </div>
         );
