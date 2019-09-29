@@ -17,7 +17,7 @@ class DomainCrawlerCommand extends Command
     private $entityManager;
     private $container;
 
-    private $enabled = false;
+    private $enabled = true;
 
     /**
      * DomainCrawlerCommand constructor.
