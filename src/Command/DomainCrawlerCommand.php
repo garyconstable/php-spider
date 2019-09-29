@@ -2,12 +2,12 @@
 
 namespace App\Command;
 
+use App\Service\DomainService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Entity\Process;
-use Psr\Log\LoggerInterface;
 
 class DomainCrawlerCommand extends Command
 {
@@ -16,7 +16,6 @@ class DomainCrawlerCommand extends Command
     private $domainsService;
     private $entityManager;
     private $container;
-    private $logger;
 
     private $enabled = false;
 
@@ -24,19 +23,16 @@ class DomainCrawlerCommand extends Command
      * DomainCrawlerCommand constructor.
      *
      * @param ContainerInterface $container
-     * @param \App\Service\DomainService $ds
-     * @param LoggerInterface $logger
+     * @param DomainService $ds
      */
     public function __construct(
         ContainerInterface $container,
-        \App\Service\DomainService $ds,
-        LoggerInterface $logger
+        DomainService $ds
     ) {
         parent::__construct();
         $this->container = $container;
         $this->entityManager = $this->container->get('doctrine')->getManager();
         $this->domainsService = $ds;
-        $this->logger = new $logger('spider:domain:crawl');
     }
 
     /**
@@ -45,7 +41,8 @@ class DomainCrawlerCommand extends Command
      */
     public function cleanupProcess()
     {
-        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_worker']);
+        $processes = $this->entityManager->getRepository('App:Process')
+            ->findBy(['worker_type' => 'domain_worker']);
 
         foreach ($processes as $process) {
             $date = $process->getDateAdd();
@@ -70,7 +67,9 @@ class DomainCrawlerCommand extends Command
         $command = "killall php";
         exec($command, $output);
 
-        $processes = $this->entityManager->getRepository('App:Process')->findBy(['worker_type' => 'domain_initiator']);
+        $processes = $this->entityManager->getRepository('App:Process')
+            ->findBy(['worker_type' => 'domain_initiator']);
+
         foreach ($processes as $process) {
             $pid = $process->getPid();
             $command = "kill " . $pid . " > /dev/null 2>&1 & echo $!;";
