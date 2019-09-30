@@ -33,6 +33,8 @@ class DomainCrawlerCommand extends Command
         $this->container = $container;
         $this->entityManager = $this->container->get('doctrine')->getManager();
         $this->domainsService = $ds;
+        
+        die('---> construct');
     }
 
     /**
