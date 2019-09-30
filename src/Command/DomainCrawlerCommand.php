@@ -65,7 +65,7 @@ class DomainCrawlerCommand extends Command
     public function endInitiators()
     {
         
-        
+        /*
         if(function_exists('exec')){
             echo 'Function exists';
         }else{
@@ -76,14 +76,13 @@ class DomainCrawlerCommand extends Command
         echo "<pre>";
         echo print_r($disabled, 1);
         echo "<pre>".PHP_EOL;
+        */
         
-        
-        
-        
+       
         echo '1 '.PHP_EOL;
         
         $command = "killall php";
-        exec($command, $output);
+        // exec($command, $output);
         
         var_dump($output);
         
