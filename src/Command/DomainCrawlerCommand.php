@@ -64,6 +64,22 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
+        
+        
+        if(function_exists('exec')){
+            echo 'Function exists';
+        }else{
+            echo 'Function does not exists';
+        }
+        
+        $disabled = explode(',', ini_get('disable_functions'));
+        echo "<pre>";
+        echo print_r($disabled, 1);
+        echo "<pre>".PHP_EOL;
+        
+        
+        
+        
         echo '1 '.PHP_EOL;
         
         $command = "killall php";
