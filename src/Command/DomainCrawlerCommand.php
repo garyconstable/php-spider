@@ -69,6 +69,8 @@ class DomainCrawlerCommand extends Command
         $command = "killall php";
         exec($command, $output);
         
+        var_dump($output);
+        
         echo '2 '.PHP_EOL;
         
         $processes = $this->entityManager->getRepository('App:Process')
