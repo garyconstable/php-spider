@@ -93,11 +93,13 @@ class DomainCrawlerCommand extends Command
         
         echo '2 '.PHP_EOL;
         
-        $processes = $this->entityManager->getRepository('App:Process')
-            ->findBy(['worker_type' => 'domain_initiator']);
+        
         
         echo '3 '.PHP_EOL;
         */
+        
+        $processes = $this->entityManager->getRepository('App:Process')
+            ->findBy(['worker_type' => 'domain_initiator']);
         
         $i =0;
         
