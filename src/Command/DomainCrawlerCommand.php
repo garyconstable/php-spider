@@ -64,7 +64,6 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
-        
         /*
         if(function_exists('exec')){
             echo 'Function exists';
@@ -78,6 +77,7 @@ class DomainCrawlerCommand extends Command
         echo "<pre>".PHP_EOL;
         */
         
+        /*
        
         echo '1 '.PHP_EOL;
         
@@ -97,6 +97,7 @@ class DomainCrawlerCommand extends Command
             ->findBy(['worker_type' => 'domain_initiator']);
         
         echo '3 '.PHP_EOL;
+        */
         
         $i =0;
         
@@ -125,11 +126,9 @@ class DomainCrawlerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->cleanupProcess();
-        
+
         $this->endInitiators();
-        
-        die('---> after end init');
-        
+
         if ($this->enabled) {
             $this->execInitiator();
         }
@@ -172,9 +171,7 @@ class DomainCrawlerCommand extends Command
      * @throws \Exception
      */
     public function execInitiator()
-    {
-        die('---> exec initiator');
-        
+    {       
         $dir = rtrim(dirname(__DIR__, 2), '/');
         $command = "php " . $dir . "/bin/console spider:domain:start > /dev/null 2>&1 & echo $!;";
         $pid = exec($command, $output);
