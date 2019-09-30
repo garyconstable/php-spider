@@ -64,9 +64,9 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
-        $command = "killall php";
-        exec($command, $output);
-
+        // $command = "killall php";
+        // exec($command, $output);
+        
         $processes = $this->entityManager->getRepository('App:Process')
             ->findBy(['worker_type' => 'domain_initiator']);
 
