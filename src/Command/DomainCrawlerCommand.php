@@ -64,57 +64,19 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
-        /*
-        if(function_exists('exec')){
-            echo 'Function exists';
-        }else{
-            echo 'Function does not exists';
-        }
-        
-        $disabled = explode(',', ini_get('disable_functions'));
-        echo "<pre>";
-        echo print_r($disabled, 1);
-        echo "<pre>".PHP_EOL;
-        */
-        
-        /*
-       
-        echo '1 '.PHP_EOL;
-        
-        try{
-            $command = "killall php";
-            exec($command, $output);
-        }catch(Exception $ex){
-            echo $ex->getMessage().PHP_EOL;
-        }
-        
-        
-        var_dump($output);
-        
-        echo '2 '.PHP_EOL;
-        
-        
-        
-        echo '3 '.PHP_EOL;
-        */
-        
+        $command = "killall php";
+        exec($command, $output);
+
         $processes = $this->entityManager->getRepository('App:Process')
             ->findBy(['worker_type' => 'domain_initiator']);
-        
-        $i =0;
-        
+
         foreach ($processes as $process) {
-            
-            echo '4 ' . $i . ' ' .PHP_EOL;
-            
             $pid = $process->getPid();
             $command = "kill " . $pid . " > /dev/null 2>&1 & echo $!;";
             exec($command, $output);
             $this->entityManager->remove($process);
             $this->entityManager->flush();
         }
-        
-        echo '5 '.PHP_EOL;
     }
 
     /**
