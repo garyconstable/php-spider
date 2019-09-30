@@ -64,19 +64,32 @@ class DomainCrawlerCommand extends Command
      */
     public function endInitiators()
     {
+        echo '1 '.PHP_EOL;
+        
         $command = "killall php";
         exec($command, $output);
-
+        
+        echo '2 '.PHP_EOL;
+        
         $processes = $this->entityManager->getRepository('App:Process')
             ->findBy(['worker_type' => 'domain_initiator']);
-
+        
+        echo '3 '.PHP_EOL;
+        
+        $i =0;
+        
         foreach ($processes as $process) {
+            
+            echo '4 ' . $i . ' ' .PHP_EOL;
+            
             $pid = $process->getPid();
             $command = "kill " . $pid . " > /dev/null 2>&1 & echo $!;";
             exec($command, $output);
             $this->entityManager->remove($process);
             $this->entityManager->flush();
         }
+        
+        echo '5 '.PHP_EOL;
     }
 
     /**
@@ -90,8 +103,6 @@ class DomainCrawlerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->cleanupProcess();
-        
-        die('---> after cleanup');
         
         $this->endInitiators();
         
