@@ -81,8 +81,13 @@ class DomainCrawlerCommand extends Command
        
         echo '1 '.PHP_EOL;
         
-        $command = "killall php";
-        // exec($command, $output);
+        try{
+            $command = "killall php";
+            exec($command, $output);
+        }catch(Exception $ex){
+            echo $ex->getMessage().PHP_EOL;
+        }
+        
         
         var_dump($output);
         
