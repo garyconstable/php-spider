@@ -134,6 +134,8 @@ class DomainCrawlerCommand extends Command
      */
     public function execInitiator()
     {
+        die('---> exec initiator');
+        
         $dir = rtrim(dirname(__DIR__, 2), '/');
         $command = "php " . $dir . "/bin/console spider:domain:start > /dev/null 2>&1 & echo $!;";
         $pid = exec($command, $output);
